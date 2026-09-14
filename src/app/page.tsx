@@ -1,21 +1,22 @@
 /* ============================================================
    Pantalla de inicio de AlToque
    ------------------------------------------------------------
-   Esta es la primera pantalla que ve alguien que necesita
-   resolver un problema en su casa.
+   NOVEDAD: la grilla de oficios ya NO está escrita a mano acá.
+   Sale de la tabla oficios_config de tu base de datos.
 
-   Por ahora los datos están escritos acá abajo, a mano. En el
-   paso 4 los vamos a traer de la base de datos y esta pantalla
-   casi no va a cambiar: solo cambia de dónde salen los datos.
+   Fijate que la función Inicio ahora dice "async" y adentro
+   hace "await". Eso significa: esta pantalla espera a que la
+   base conteste antes de dibujarse. La consulta pasa en el
+   servidor, no en el navegador del usuario.
 
-   Un archivo llamado page.tsx dentro de src/app es la pantalla
-   principal, la que se ve en la dirección "/". Si mañana creás
-   src/app/pedidos/page.tsx, esa se va a ver en "/pedidos".
+   La lista de profesionales sigue escrita a mano por ahora.
+   Esa la vamos a conectar cuando existan profesionales de
+   verdad, en el paso 4.
    ============================================================ */
 
+import { supabase } from "@/lib/supabase";
+
 // ---------- Íconos ----------
-// Dibujos vectoriales. Se ven nítidos en cualquier tamaño de
-// pantalla y pesan mucho menos que una imagen.
 
 const traza = {
   fill: "none",
@@ -71,6 +72,12 @@ const Serrucho = () => (
     <path d="M17 6l3.5 3.5-3 3" />
   </svg>
 );
+const Herramienta = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" {...traza}>
+    <path d="M14.5 6a4 4 0 0 0 5 5l-8.5 8.5a2.5 2.5 0 0 1-3.5-3.5z" />
+    <path d="M14.5 6 18 2.5" />
+  </svg>
+);
 
 const Lupa = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" {...traza} strokeWidth={2}>
@@ -103,19 +110,20 @@ const Escudo = () => (
   </svg>
 );
 
-// ---------- Datos de ejemplo ----------
-// Todo esto sale de la base de datos más adelante.
+// A cada oficio de la base le corresponde un dibujo. La base
+// guarda el nombre; el dibujo vive acá, en la pantalla.
+const ICONOS: Record<string, () => React.ReactElement> = {
+  electricista: Rayo,
+  gasista: Llama,
+  plomero: Gota,
+  pintor: Rodillo,
+  albanil: Ladrillo,
+  cerrajero: Llave,
+  aire: Copo,
+  carpintero: Serrucho,
+};
 
-const OFICIOS = [
-  { id: "electricista", nombre: "Electricista", Icono: Rayo },
-  { id: "gasista", nombre: "Gasista", Icono: Llama },
-  { id: "plomero", nombre: "Plomero", Icono: Gota },
-  { id: "pintor", nombre: "Pintor", Icono: Rodillo },
-  { id: "albanil", nombre: "Albañil", Icono: Ladrillo },
-  { id: "cerrajero", nombre: "Cerrajero", Icono: Llave },
-  { id: "aire", nombre: "Aire acond.", Icono: Copo },
-  { id: "carpintero", nombre: "Carpintero", Icono: Serrucho },
-];
+// ---------- Datos que todavía están a mano ----------
 
 const PROFESIONALES = [
   {
@@ -161,13 +169,18 @@ const PROFESIONALES = [
 
 // ---------- La pantalla ----------
 
-export default function Inicio() {
+export default async function Inicio() {
+  // Acá le pedimos a la base la lista de oficios.
+  // "select" elige qué columnas queremos; "order" los ordena.
+  const { data: oficios, error } = await supabase
+    .from("oficios_config")
+    .select("oficio, nombre_visible, exige_matricula, exige_seguro")
+    .order("nombre_visible");
+
   return (
-    // max-w-md la mantiene angosta como un celular, incluso en una
-    // computadora. mx-auto la centra.
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
       <Encabezado />
-      <Oficios />
+      <Oficios oficios={oficios} error={error?.message} />
       <BannerUrgencias />
       <CercaTuyo />
     </main>
@@ -193,34 +206,82 @@ function Encabezado() {
 
       <p className="mt-3 flex items-center gap-1.5 text-[12.5px] text-white/60">
         <Pin />
-        Enviando a <b className="font-semibold text-white">Av. Corrientes 4820, 6.º B</b>
+        Enviando a{" "}
+        <b className="font-semibold text-white">Av. Corrientes 4820, 6.º B</b>
       </p>
     </header>
   );
 }
 
-function Oficios() {
+// Esta función ahora recibe los oficios desde afuera, en vez de
+// tenerlos escritos adentro.
+function Oficios({
+  oficios,
+  error,
+}: {
+  oficios:
+    | {
+        oficio: string;
+        nombre_visible: string;
+        exige_matricula: boolean;
+        exige_seguro: boolean;
+      }[]
+    | null;
+  error?: string;
+}) {
   return (
     <section className="px-5 pt-5">
-      <h2 className="font-display mb-3 text-[15.5px] font-bold text-tinta">
-        Oficios
-      </h2>
+      <div className="mb-3 flex items-baseline justify-between">
+        <h2 className="font-display text-[15.5px] font-bold text-tinta">
+          Oficios
+        </h2>
+        <span className="text-[11px] text-tinta-3">desde la base de datos</span>
+      </div>
 
-      {/* grid-cols-4 = cuatro columnas. gap-2 = separación entre ellas. */}
+      {/* Si la base no contesta, lo decimos en criollo en vez de
+          dejar la pantalla vacía sin explicación. */}
+      {error && (
+        <p className="rounded-xl border border-alerta/30 bg-alerta-suave p-3 text-[13px] text-tinta-2">
+          No se pudo leer la base de datos: {error}
+        </p>
+      )}
+
       <div className="grid grid-cols-4 gap-2">
-        {OFICIOS.map(({ id, nombre, Icono }) => (
-          <button
-            key={id}
-            className="flex flex-col items-center gap-1.5 rounded-xl border border-linea-2 bg-fondo px-1 pt-3 pb-2.5 transition hover:border-marca-2"
-          >
-            <span className="text-marca">
-              <Icono />
-            </span>
-            <span className="text-center text-[10.5px] leading-tight font-semibold text-tinta-2">
-              {nombre}
-            </span>
-          </button>
-        ))}
+        {oficios?.map((o) => {
+          const Icono = ICONOS[o.oficio] ?? Herramienta;
+
+          // El escudo significa "a este oficio le exigimos papeles
+          // antes de dejarlo trabajar". Al vecino no le importa si
+          // el papel se llama matrícula o póliza: le importa saber
+          // que el profesional pasó un filtro.
+          const exigePapeles = o.exige_matricula || o.exige_seguro;
+
+          return (
+            <button
+              key={o.oficio}
+              className="relative flex flex-col items-center gap-1.5 rounded-xl border border-linea-2 bg-fondo px-1 pt-3 pb-2.5 transition hover:border-marca-2"
+            >
+              {exigePapeles && (
+                <span
+                  className="absolute top-1.5 right-1.5 text-marca"
+                  title={
+                    o.exige_matricula
+                      ? "Exigimos matrícula y seguro vigentes"
+                      : "Exigimos seguro vigente"
+                  }
+                >
+                  <Escudo />
+                </span>
+              )}
+              <span className="text-marca">
+                <Icono />
+              </span>
+              <span className="text-center text-[10.5px] leading-tight font-semibold text-tinta-2">
+                {o.nombre_visible}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </section>
   );
@@ -254,7 +315,7 @@ function CercaTuyo() {
         <h2 className="font-display text-[15.5px] font-bold text-tinta">
           Bien puntuados cerca tuyo
         </h2>
-        <span className="text-[13px] font-semibold text-marca">Ver todos</span>
+        <span className="text-[11px] text-tinta-3">datos de ejemplo</span>
       </div>
 
       <div className="flex flex-col gap-2.5">
@@ -266,9 +327,6 @@ function CercaTuyo() {
   );
 }
 
-// El tipo (typeof PROFESIONALES)[number] significa "un elemento de
-// esa lista". Así TypeScript sabe qué campos existen y te avisa si
-// te equivocás en un nombre.
 function FichaProfesional({ p }: { p: (typeof PROFESIONALES)[number] }) {
   return (
     <button className="flex w-full items-start gap-3 rounded-2xl border border-linea bg-white p-3.5 text-left transition hover:border-marca-2">
