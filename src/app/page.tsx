@@ -241,7 +241,15 @@ function Encabezado({
             <p className="text-[13px] text-white/60">
               Hola, <b className="font-semibold text-white">{nombre}</b>
             </p>
-            <BotonSalir />
+            <span className="flex items-center gap-3">
+              <Link
+                href="/pedidos"
+                className="text-[12px] font-semibold text-white/80 underline underline-offset-2"
+              >
+                Mis pedidos
+              </Link>
+              <BotonSalir />
+            </span>
           </>
         ) : (
           <>
@@ -267,12 +275,15 @@ function Encabezado({
         en casa?
       </h1>
 
-      <button className="mt-4 flex w-full items-center gap-2.5 rounded-xl bg-white px-3.5 py-3 text-left text-sm text-tinta-3 shadow-lg">
+      <Link
+        href="/pedidos/nuevo"
+        className="mt-4 flex w-full items-center gap-2.5 rounded-xl bg-white px-3.5 py-3 text-left text-sm text-tinta-3 shadow-lg"
+      >
         <span className="text-marca-2">
           <Lupa />
         </span>
-        Buscar oficio, problema o profesional
-      </button>
+        Contá tu problema y recibí presupuestos
+      </Link>
 
       {/* La dirección ya no está escrita a mano: es la que el
           usuario cargó. Si todavía no cargó ninguna, lo invitamos. */}
@@ -343,8 +354,12 @@ function Oficios({
           const exigePapeles = o.exige_matricula || o.exige_seguro;
 
           return (
-            <button
+            // Cada oficio lleva directo a publicar un pedido de ese
+            // oficio. El "?oficio=..." viaja en la dirección y el
+            // formulario lo usa para venir ya elegido.
+            <Link
               key={o.oficio}
+              href={`/pedidos/nuevo?oficio=${o.oficio}`}
               className="relative flex flex-col items-center gap-1.5 rounded-xl border border-linea-2 bg-fondo px-1 pt-3 pb-2.5 transition hover:border-marca-2"
             >
               {exigePapeles && (
@@ -365,7 +380,7 @@ function Oficios({
               <span className="text-center text-[10.5px] leading-tight font-semibold text-tinta-2">
                 {o.nombre_visible}
               </span>
-            </button>
+            </Link>
           );
         })}
       </div>
