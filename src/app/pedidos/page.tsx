@@ -73,9 +73,10 @@ export default async function Pedidos() {
             const inm = Array.isArray(p.inmuebles) ? p.inmuebles[0] : p.inmuebles;
 
             return (
-              <div
+              <Link
                 key={p.id}
-                className="rounded-2xl border border-linea bg-white p-3.5"
+                href={`/pedidos/${p.id}`}
+                className="block rounded-2xl border border-linea bg-white p-3.5 transition hover:border-marca-2"
               >
                 <div className="mb-2 flex items-center justify-between gap-2">
                   <span
@@ -101,11 +102,11 @@ export default async function Pedidos() {
 
                 {p.estado === "publicado" && p.vence_el && (
                   <p className="mt-2.5 text-[11.5px] text-tinta-3">
-                    Todavía no llegó ningún presupuesto. El pedido queda abierto
-                    hasta el {fecha(p.vence_el)}.
+                    Abierto hasta el {fecha(p.vence_el)}. Tocá para ver los
+                    presupuestos que llegaron.
                   </p>
                 )}
-              </div>
+              </Link>
             );
           })
         ) : (

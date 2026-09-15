@@ -82,7 +82,7 @@ export default function FormularioPedido({
     // Las 48 horas de la regla del paso 1, contadas desde ahora.
     const vence = new Date(ahora.getTime() + 48 * 60 * 60 * 1000);
 
-    const { error } = await supabase.from("pedidos").insert({
+    const { data, error } = await supabase.from("pedidos").insert({
       inmueble_id: inmuebleId,
       oficio,
       descripcion: descripcion.trim(),
@@ -91,7 +91,11 @@ export default function FormularioPedido({
       estado: "publicado",
       publicado_el: ahora.toISOString(),
       vence_el: vence.toISOString(),
-    });
+    })
+      // Pedimos que nos devuelva el id del pedido recién creado,
+      // para poder llevarlo directo a agregarle las fotos.
+      .select("id")
+      .single();
 
     setEnviando(false);
 
@@ -100,7 +104,7 @@ export default function FormularioPedido({
       return;
     }
 
-    router.push("/pedidos");
+    router.push(`/pedidos/${data.id}`);
     router.refresh();
   }
 
@@ -234,7 +238,7 @@ export default function FormularioPedido({
           {enviando ? "Publicando…" : "Publicar pedido"}
         </button>
         <p className="mt-2.5 text-center text-[11.5px] leading-snug text-tinta-3">
-          Se lo mostramos a los profesionales habilitados de tu zona.
+          En la pantalla siguiente vas a poder agregarle fotos.
           <br />
           Si en 48 horas nadie responde, el pedido se cierra y te avisamos.
         </p>

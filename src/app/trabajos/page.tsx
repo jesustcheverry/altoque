@@ -98,9 +98,10 @@ export default async function Trabajos() {
           </div>
         ) : pedidos && pedidos.length > 0 ? (
           pedidos.map((p) => (
-            <div
+            <Link
               key={p.id}
-              className={`rounded-2xl border bg-white p-3.5 ${
+              href={`/trabajos/${p.id}`}
+              className={`block rounded-2xl border bg-white p-3.5 transition hover:border-acento ${
                 p.urgencia === "urgente"
                   ? "border-l-[3px] border-l-alerta border-linea"
                   : "border-linea"
@@ -127,11 +128,10 @@ export default async function Trabajos() {
                 {p.franja_horaria && <Etiqueta>{p.franja_horaria}</Etiqueta>}
               </div>
 
-              <p className="mt-2.5 text-[11.5px] text-tinta-3">
-                La dirección exacta y el teléfono aparecen cuando el cliente
-                acepta tu presupuesto.
+              <p className="mt-2.5 text-[11.5px] font-semibold text-acento-tinta">
+                Tocá para ver el detalle y presupuestar →
               </p>
-            </div>
+            </Link>
           ))
         ) : (
           <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-[13.5px] leading-relaxed text-tinta-3">
