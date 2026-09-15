@@ -66,9 +66,10 @@ export default async function Inmuebles() {
         {inmuebles && inmuebles.length > 0 ? (
           <div className="flex flex-col gap-2.5">
             {inmuebles.map((i) => (
-              <div
+              <Link
                 key={i.id}
-                className="rounded-2xl border border-linea bg-white p-3.5"
+                href={`/inmuebles/${i.id}`}
+                className="block rounded-2xl border border-linea bg-white p-3.5 transition hover:border-marca-2"
               >
                 <div className="flex items-baseline justify-between gap-2">
                   <b className="text-[14.5px] font-bold text-tinta">{i.alias}</b>
@@ -82,12 +83,10 @@ export default async function Inmuebles() {
                   {i.depto && ` ${i.depto}`}
                   {i.barrio && ` · ${i.barrio}`}
                 </p>
-                {i.instrucciones && (
-                  <p className="mt-1.5 text-[12px] leading-snug text-tinta-3">
-                    {i.instrucciones}
-                  </p>
-                )}
-              </div>
+                <p className="mt-2 border-t border-linea-2 pt-2 text-[11.5px] font-semibold text-marca">
+                  Ver el historial de esta propiedad →
+                </p>
+              </Link>
             ))}
           </div>
         ) : (

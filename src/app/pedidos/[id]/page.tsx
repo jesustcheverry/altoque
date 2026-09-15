@@ -49,15 +49,32 @@ export default async function PedidoDetalle({
 
   if (!pedido) notFound();
 
-  // Los presupuestos, con el nombre de quien los mandó. La base
-  // sigue la relación presupuesto → perfil → persona sola.
   const { data: presupuestos } = await supabase
     .from("presupuestos")
     .select(
-      "id, total_centavos, mano_obra_centavos, repuestos_centavos, incluye, mensaje, disponible_el, estado, enviado_el, perfiles_profesionales(oficio, personas(nombre))",
+      "id, profesional_id, total_centavos, mano_obra_centavos, repuestos_centavos, incluye, mensaje, disponible_el, estado, enviado_el",
     )
     .eq("pedido_id", id)
     .order("total_centavos");
+
+  // Y los nombres salen de la vista pública.
+  //
+  // Antes esta pantalla intentaba leerlos de la tabla "personas"
+  // y volvían vacíos, porque la regla de esa tabla dice que cada
+  // uno ve solo su propia fila. Está bien que sea así: ahí está
+  // el teléfono. La vista expone nombre y reputación, y nada más.
+  const idsProf = (presupuestos ?? []).map((p) => p.profesional_id);
+  const mapaProf = new Map<
+    string,
+    { nombre: string; puntaje: number | null; cantidad_resenas: number }
+  >();
+  if (idsProf.length > 0) {
+    const { data: profs } = await supabase
+      .from("profesionales_publicos")
+      .select("id, nombre, puntaje, cantidad_resenas")
+      .in("id", idsProf);
+    for (const pr of profs ?? []) mapaProf.set(pr.id, pr);
+  }
 
   // Las fotos del pedido. En la tabla guardamos el camino del
   // archivo; para poder mostrarlo hay que pedirle a Supabase una
@@ -123,7 +140,8 @@ export default async function PedidoDetalle({
         {aceptado && (
           <div className="rounded-2xl border border-ok/30 bg-ok-suave p-4">
             <b className="font-display block text-[14.5px] font-bold text-tinta">
-              Elegiste a {nombreDe(aceptado)}
+              Elegiste a{" "}
+              {mapaProf.get(aceptado.profesional_id)?.nombre ?? "un profesional"}
             </b>
             <p className="mt-1 text-[13px] text-tinta-2">
               Por {aPesos(aceptado.total_centavos)}. El trabajo ya está creado y
@@ -182,11 +200,19 @@ export default async function PedidoDetalle({
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <b className="block text-[14.5px] font-bold text-tinta">
-                  {nombreDe(p)}
-                </b>
+                <Link
+                  href={`/profesionales/${p.profesional_id}`}
+                  className="block text-[14.5px] font-bold text-tinta underline decoration-linea underline-offset-2"
+                >
+                  {mapaProf.get(p.profesional_id)?.nombre ?? "Profesional"}
+                </Link>
+                <span className="mt-0.5 block text-[11px] text-tinta-3">
+                  {mapaProf.get(p.profesional_id)?.puntaje
+                    ? `★ ${Number(mapaProf.get(p.profesional_id)!.puntaje).toFixed(1)} · ${mapaProf.get(p.profesional_id)!.cantidad_resenas} reseñas`
+                    : "Todavía sin reseñas"}
+                </span>
                 {p.id === masBarato && vigentes.length > 1 && (
-                  <span className="text-[11px] font-semibold text-acento-tinta">
+                  <span className="mt-0.5 block text-[11px] font-semibold text-acento-tinta">
                     El más barato
                   </span>
                 )}
@@ -236,19 +262,6 @@ export default async function PedidoDetalle({
       </div>
     </main>
   );
-}
-
-// El nombre viaja anidado: presupuesto → perfil → persona.
-// Esta función desenreda eso sin ensuciar la pantalla.
-function nombreDe(p: {
-  perfiles_profesionales?: unknown;
-}): string {
-  const perfil = Array.isArray(p.perfiles_profesionales)
-    ? p.perfiles_profesionales[0]
-    : p.perfiles_profesionales;
-  const persona = (perfil as { personas?: unknown } | null)?.personas;
-  const p2 = Array.isArray(persona) ? persona[0] : persona;
-  return (p2 as { nombre?: string } | null)?.nombre ?? "Profesional";
 }
 
 function fecha(iso: string) {
