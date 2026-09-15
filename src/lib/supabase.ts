@@ -1,26 +1,20 @@
 /* ============================================================
-   La conexión con la base de datos
+   Conexión con Supabase — lado NAVEGADOR
    ------------------------------------------------------------
-   Este archivo se escribe una sola vez y después lo usa toda la
-   app. Cada vez que una pantalla necesite datos, va a decir
-   "importá supabase de acá" y listo.
+   Este es el que usan las pantallas donde el usuario escribe
+   cosas: el formulario de registro, el de ingreso, el botón de
+   salir.
 
-   Las dos claves salen de .env.local, el archivo que creaste
-   vos. Nunca se escriben acá adentro: si estuvieran en el
-   código, se subirían a GitHub.
+   Guarda la sesión en una cookie del navegador, y esa cookie es
+   la que después lee el servidor para saber quién sos. Por eso
+   hay dos archivos y no uno.
    ============================================================ */
 
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const clave = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-// Si alguna de las dos falta, mejor avisar con un mensaje claro
-// ahora que perseguir un error raro dentro de media hora.
-if (!url || !clave) {
-  throw new Error(
-    "Faltan las claves de Supabase. Revisá que .env.local tenga NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY, y reiniciá el servidor.",
+export function clienteNavegador() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );
 }
-
-export const supabase = createClient(url, clave);

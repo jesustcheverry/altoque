@@ -14,7 +14,9 @@
    verdad, en el paso 4.
    ============================================================ */
 
-import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import { clienteServidor } from "@/lib/supabase-servidor";
+import BotonSalir from "@/components/BotonSalir";
 
 // ---------- Íconos ----------
 
@@ -170,8 +172,27 @@ const PROFESIONALES = [
 // ---------- La pantalla ----------
 
 export default async function Inicio() {
-  // Acá le pedimos a la base la lista de oficios.
-  // "select" elige qué columnas queremos; "order" los ordena.
+  const supabase = await clienteServidor();
+
+  // ¿Quién está mirando esta pantalla? Si nadie entró, user es null.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Si hay alguien, buscamos su nombre. Ojo: esta consulta solo
+  // devuelve SU fila, nunca la de otro. Eso no lo decide este
+  // código, lo impone la regla "veo mi persona" de la base.
+  let nombre: string | null = null;
+  if (user) {
+    const { data: persona } = await supabase
+      .from("personas")
+      .select("nombre")
+      .eq("id", user.id)
+      .single();
+    nombre = persona?.nombre ?? null;
+  }
+
+  // Y acá la lista de oficios, igual que antes.
   const { data: oficios, error } = await supabase
     .from("oficios_config")
     .select("oficio, nombre_visible, exige_matricula, exige_seguro")
@@ -179,7 +200,7 @@ export default async function Inicio() {
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <Encabezado />
+      <Encabezado nombre={nombre} />
       <Oficios oficios={oficios} error={error?.message} />
       <BannerUrgencias />
       <CercaTuyo />
@@ -187,10 +208,36 @@ export default async function Inicio() {
   );
 }
 
-function Encabezado() {
+function Encabezado({ nombre }: { nombre: string | null }) {
   return (
-    <header className="bg-marca px-5 pt-8 pb-6 text-white">
-      <p className="text-[13px] text-white/60">Buenas tardes,</p>
+    <header className="bg-marca px-5 pt-6 pb-6 text-white">
+      {/* Arriba de todo: quién sos, o cómo entrar. */}
+      <div className="mb-4 flex items-center justify-between gap-3">
+        {nombre ? (
+          <>
+            <p className="text-[13px] text-white/60">
+              Hola, <b className="font-semibold text-white">{nombre}</b>
+            </p>
+            <BotonSalir />
+          </>
+        ) : (
+          <>
+            <p className="text-[13px] text-white/60">No entraste todavía</p>
+            <span className="flex items-center gap-3 text-[12.5px] font-semibold">
+              <Link href="/entrar" className="text-white/80 underline underline-offset-2">
+                Entrar
+              </Link>
+              <Link
+                href="/registro"
+                className="rounded-lg bg-acento px-2.5 py-1.5 text-acento-tinta"
+              >
+                Crear cuenta
+              </Link>
+            </span>
+          </>
+        )}
+      </div>
+
       <h1 className="font-display mt-1 text-[23px] leading-tight font-extrabold">
         ¿Qué hay que arreglar
         <br />
