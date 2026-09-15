@@ -192,6 +192,15 @@ export default async function Inicio() {
     nombre = persona?.nombre ?? null;
   }
 
+  // Su primer inmueble, para mostrar a dónde va a ir el profesional.
+  const { data: inmuebles } = await supabase
+    .from("inmuebles")
+    .select("alias, calle, altura, piso, depto")
+    .order("creado_el")
+    .limit(1);
+
+  const inmueble = inmuebles?.[0] ?? null;
+
   // Y acá la lista de oficios, igual que antes.
   const { data: oficios, error } = await supabase
     .from("oficios_config")
@@ -200,7 +209,7 @@ export default async function Inicio() {
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <Encabezado nombre={nombre} />
+      <Encabezado nombre={nombre} inmueble={inmueble} />
       <Oficios oficios={oficios} error={error?.message} />
       <BannerUrgencias />
       <CercaTuyo />
@@ -208,7 +217,21 @@ export default async function Inicio() {
   );
 }
 
-function Encabezado({ nombre }: { nombre: string | null }) {
+type Inmueble = {
+  alias: string;
+  calle: string;
+  altura: string;
+  piso: string | null;
+  depto: string | null;
+};
+
+function Encabezado({
+  nombre,
+  inmueble,
+}: {
+  nombre: string | null;
+  inmueble: Inmueble | null;
+}) {
   return (
     <header className="bg-marca px-5 pt-6 pb-6 text-white">
       {/* Arriba de todo: quién sos, o cómo entrar. */}
@@ -251,10 +274,26 @@ function Encabezado({ nombre }: { nombre: string | null }) {
         Buscar oficio, problema o profesional
       </button>
 
+      {/* La dirección ya no está escrita a mano: es la que el
+          usuario cargó. Si todavía no cargó ninguna, lo invitamos. */}
       <p className="mt-3 flex items-center gap-1.5 text-[12.5px] text-white/60">
         <Pin />
-        Enviando a{" "}
-        <b className="font-semibold text-white">Av. Corrientes 4820, 6.º B</b>
+        {inmueble ? (
+          <>
+            Enviando a{" "}
+            <Link href="/inmuebles" className="font-semibold text-white underline underline-offset-2">
+              {inmueble.calle} {inmueble.altura}
+              {inmueble.piso && `, ${inmueble.piso}.º`}
+              {inmueble.depto && ` ${inmueble.depto}`}
+            </Link>
+          </>
+        ) : nombre ? (
+          <Link href="/inmuebles" className="font-semibold text-white underline underline-offset-2">
+            Agregá tu dirección
+          </Link>
+        ) : (
+          <span>Entrá para guardar tu dirección</span>
+        )}
       </p>
     </header>
   );
