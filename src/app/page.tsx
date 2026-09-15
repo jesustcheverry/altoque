@@ -213,7 +213,30 @@ export default async function Inicio() {
       <Oficios oficios={oficios} error={error?.message} />
       <BannerUrgencias />
       <CercaTuyo />
+      <BannerProfesional />
     </main>
+  );
+}
+
+// La puerta de entrada del otro lado del mercado. Va abajo de
+// todo a propósito: el que abre la app es casi siempre alguien
+// con un problema en su casa, no un gasista buscando trabajo.
+function BannerProfesional() {
+  return (
+    <section className="px-5 pt-7">
+      <Link
+        href="/profesional"
+        className="block rounded-2xl bg-[#16211f] p-4 text-white"
+      >
+        <b className="font-display block text-[15px] font-bold">
+          ¿Trabajás de algún oficio?
+        </b>
+        <span className="mt-1 block text-[12.5px] leading-snug text-white/60">
+          Activá tu perfil y recibí pedidos de tu zona. Sin comisión hasta que
+          cobres un trabajo.
+        </span>
+      </Link>
+    </section>
   );
 }
 

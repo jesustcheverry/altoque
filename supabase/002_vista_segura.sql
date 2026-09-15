@@ -1,0 +1,22 @@
+-- ============================================================
+--  Corrección de seguridad: la vista profesionales_habilitados
+--  ------------------------------------------------------------
+--  PROBLEMA
+--  En PostgreSQL, una vista corre por defecto con los permisos
+--  de quien la creó, no de quien la consulta. Eso significa que
+--  profesionales_habilitados se estaba salteando las reglas de
+--  seguridad de la tabla perfiles_profesionales.
+--
+--  En criollo: cualquiera con la clave pública de la app podía
+--  leer los números de matrícula y los CUIT de todos los
+--  profesionales, incluso los que todavía no activaron su
+--  perfil.
+--
+--  SOLUCIÓN
+--  "security_invoker = on" le dice a la vista que aplique las
+--  reglas de quien pregunta, igual que hace cualquier tabla.
+--
+--  CÓMO SE USA: pegar en el SQL Editor de Supabase y Run.
+-- ============================================================
+
+alter view public.profesionales_habilitados set (security_invoker = on);
