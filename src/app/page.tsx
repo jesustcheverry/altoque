@@ -9,9 +9,14 @@
    base conteste antes de dibujarse. La consulta pasa en el
    servidor, no en el navegador del usuario.
 
-   La lista de profesionales sigue escrita a mano por ahora.
-   Esa la vamos a conectar cuando existan profesionales de
-   verdad, en el paso 4.
+   NOVEDAD 2: la lista de profesionales tampoco esta escrita a
+   mano. Hasta hoy habia tres inventados, con precios inventados
+   y reseñas inventadas. Los sacamos: ahora sale de la vista
+   profesionales_publicos.
+
+   Si todavia no hay ningun profesional activo, la pantalla lo
+   dice. Una app vacia que lo admite da mas confianza que una
+   app llena de gente que no existe.
    ============================================================ */
 
 import Link from "next/link";
@@ -125,50 +130,6 @@ const ICONOS: Record<string, () => React.ReactElement> = {
   carpintero: Serrucho,
 };
 
-// ---------- Datos que todavía están a mano ----------
-
-const PROFESIONALES = [
-  {
-    id: "ruben",
-    iniciales: "RO",
-    color: "#0e3a34",
-    nombre: "Rubén Ortega",
-    oficio: "Gasista matriculado",
-    zona: "Villa Crespo",
-    distancia: "1,2 km",
-    puntaje: 4.9,
-    resenas: 214,
-    visita: "$22.000",
-    responde: "12 min",
-  },
-  {
-    id: "marcela",
-    iniciales: "MD",
-    color: "#175048",
-    nombre: "Marcela Duarte",
-    oficio: "Electricista matriculada",
-    zona: "Almagro",
-    distancia: "0,8 km",
-    puntaje: 4.8,
-    resenas: 167,
-    visita: "$18.000",
-    responde: "8 min",
-  },
-  {
-    id: "hernan",
-    iniciales: "HV",
-    color: "#7a4e06",
-    nombre: "Hernán Villalba",
-    oficio: "Plomero",
-    zona: "Caballito",
-    distancia: "2,4 km",
-    puntaje: 4.7,
-    resenas: 98,
-    visita: "$16.500",
-    responde: "20 min",
-  },
-];
-
 // ---------- La pantalla ----------
 
 export default async function Inicio() {
@@ -207,12 +168,43 @@ export default async function Inicio() {
     .select("oficio, nombre_visible, exige_matricula, exige_seguro")
     .order("nombre_visible");
 
+  // Los profesionales de verdad. Fijate que pedimos la vista
+  // profesionales_publicos y no la tabla: la vista no tiene la
+  // columna del telefono, asi que esta pantalla no podria
+  // filtrarlo aunque tuviera un error.
+  const { data: profesionales, error: errorPro } = await supabase
+    .from("profesionales_publicos")
+    .select(
+      "id, nombre, oficio, zonas, puntaje, cantidad_resenas, trabajos_terminados, matricula_vigente, seguro_vigente",
+    )
+    .order("puntaje", { ascending: false, nullsFirst: false })
+    .order("trabajos_terminados", { ascending: false })
+    .limit(4);
+
+  // La base guarda "gasista"; el vecino lee "Gas". La traduccion
+  // la hacemos con los oficios que ya trajimos arriba.
+  const nombresDeOficio = new Map(
+    (oficios ?? []).map((o) => [o.oficio, o.nombre_visible]),
+  );
+
+  // ¿El que mira esta pantalla es revisor? Se lo preguntamos a la
+  // base, no a una lista de mails escrita acá.
+  const { data: esAdmin } = await supabase.rpc("soy_admin");
+
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <Encabezado nombre={nombre} inmueble={inmueble} />
+      <Encabezado
+        nombre={nombre}
+        inmueble={inmueble}
+        esAdmin={Boolean(esAdmin)}
+      />
       <Oficios oficios={oficios} error={error?.message} />
       <BannerUrgencias />
-      <CercaTuyo />
+      <CercaTuyo
+        profesionales={profesionales}
+        nombresDeOficio={nombresDeOficio}
+        error={errorPro?.message}
+      />
       <BannerProfesional />
     </main>
   );
@@ -251,9 +243,11 @@ type Inmueble = {
 function Encabezado({
   nombre,
   inmueble,
+  esAdmin,
 }: {
   nombre: string | null;
   inmueble: Inmueble | null;
+  esAdmin: boolean;
 }) {
   return (
     <header className="bg-marca px-5 pt-6 pb-6 text-white">
@@ -265,6 +259,14 @@ function Encabezado({
               Hola, <b className="font-semibold text-white">{nombre}</b>
             </p>
             <span className="flex items-center gap-3">
+              {esAdmin && (
+                <Link
+                  href="/admin/verificaciones"
+                  className="text-[12px] font-semibold text-acento underline underline-offset-2"
+                >
+                  Verificaciones
+                </Link>
+              )}
               <Link
                 href="/pedidos"
                 className="text-[12px] font-semibold text-white/80 underline underline-offset-2"
@@ -432,70 +434,150 @@ function BannerUrgencias() {
   );
 }
 
-function CercaTuyo() {
+type Profesional = {
+  id: string;
+  nombre: string;
+  oficio: string;
+  zonas: string[] | null;
+  puntaje: number | null;
+  cantidad_resenas: number | null;
+  trabajos_terminados: number | null;
+  matricula_vigente: boolean | null;
+  seguro_vigente: boolean | null;
+};
+
+const COLORES = ["#0e3a34", "#175048", "#7a4e06", "#b4381c", "#1a574d"];
+
+function CercaTuyo({
+  profesionales,
+  nombresDeOficio,
+  error,
+}: {
+  profesionales: Profesional[] | null;
+  nombresDeOficio: Map<string, string>;
+  error?: string;
+}) {
+  const hay = profesionales && profesionales.length > 0;
+
   return (
     <section className="px-5 pt-6">
       <div className="mb-3 flex items-baseline justify-between">
         <h2 className="font-display text-[15.5px] font-bold text-tinta">
-          Bien puntuados cerca tuyo
+          Profesionales en la app
         </h2>
-        <span className="text-[11px] text-tinta-3">datos de ejemplo</span>
+        {hay && (
+          <span className="text-[11px] text-tinta-3">papeles al día</span>
+        )}
       </div>
 
-      <div className="flex flex-col gap-2.5">
-        {PROFESIONALES.map((p) => (
-          <FichaProfesional key={p.id} p={p} />
-        ))}
-      </div>
+      {/* Un cartel que dice "no hay nada" puede estar tapando un
+          error. Por eso el error va primero y por separado: no es
+          lo mismo que no haya profesionales a que la base no haya
+          contestado. */}
+      {error && (
+        <p className="mb-2.5 rounded-xl border border-alerta/30 bg-alerta-suave p-3 text-[13px] text-tinta-2">
+          No se pudo leer la lista de profesionales: {error}
+        </p>
+      )}
+
+      {hay ? (
+        <div className="flex flex-col gap-2.5">
+          {profesionales.map((p) => (
+            <FichaProfesional
+              key={p.id}
+              p={p}
+              oficio={nombresDeOficio.get(p.oficio) ?? p.oficio}
+            />
+          ))}
+        </div>
+      ) : (
+        /* El cartel honesto. Es mejor esto que tres nombres
+           inventados: si alguien entra y no hay nadie, que lo
+           sepa, pero que igual pueda publicar su pedido. */
+        <div className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center">
+          <p className="text-[13.5px] leading-relaxed text-tinta-3">
+            Todavía no hay profesionales activos.
+            <br />
+            Publicá tu pedido igual: les llega apenas se sumen.
+          </p>
+        </div>
+      )}
     </section>
   );
 }
 
-function FichaProfesional({ p }: { p: (typeof PROFESIONALES)[number] }) {
+function FichaProfesional({ p, oficio }: { p: Profesional; oficio: string }) {
+  const iniciales = p.nombre
+    .split(" ")
+    .slice(0, 2)
+    .map((parte) => parte[0])
+    .join("")
+    .toUpperCase();
+
+  const color = COLORES[p.nombre.length % COLORES.length];
+  const zona = (p.zonas ?? []).slice(0, 2).join(" · ");
+  const trabajos = p.trabajos_terminados ?? 0;
+
   return (
-    <button className="flex w-full items-start gap-3 rounded-2xl border border-linea bg-white p-3.5 text-left transition hover:border-marca-2">
+    <Link
+      href={`/profesionales/${p.id}`}
+      className="flex w-full items-start gap-3 rounded-2xl border border-linea bg-white p-3.5 text-left transition hover:border-marca-2"
+    >
       <span
         className="font-display grid size-12 shrink-0 place-items-center rounded-xl text-base font-bold text-white"
-        style={{ background: p.color }}
+        style={{ background: color }}
       >
-        {p.iniciales}
+        {iniciales}
       </span>
 
       <span className="min-w-0 flex-1">
         <b className="block text-[14.5px] font-bold text-tinta">{p.nombre}</b>
         <span className="mt-0.5 block text-[12.5px] text-tinta-2">
-          {p.oficio} · {p.zona}
+          {oficio}
+          {zona && ` · ${zona}`}
         </span>
 
         <span className="mt-1.5 flex items-center gap-2 text-[12.5px]">
-          <span className="flex items-center gap-1 font-semibold text-tinta tabular-nums">
-            <span className="text-acento">
-              <Estrella />
+          {/* Sin reseñas decimos "sin reseñas". No inventamos un 5,0. */}
+          {p.puntaje ? (
+            <span className="flex items-center gap-1 font-semibold text-tinta tabular-nums">
+              <span className="text-acento">
+                <Estrella />
+              </span>
+              {Number(p.puntaje).toFixed(1)}
+              <span className="font-normal text-tinta-3">
+                ({p.cantidad_resenas})
+              </span>
             </span>
-            {p.puntaje.toFixed(1)}
-            <span className="font-normal text-tinta-3">({p.resenas})</span>
+          ) : (
+            <span className="text-tinta-3">Sin reseñas todavía</span>
+          )}
+
+          {trabajos > 0 && (
+            <>
+              <span className="size-[3px] rounded-full bg-tinta-3" />
+              <span className="text-tinta-3 tabular-nums">
+                {trabajos} {trabajos === 1 ? "trabajo" : "trabajos"}
+              </span>
+            </>
+          )}
+        </span>
+
+        {/* El escudo solo si los papeles están vigentes de verdad.
+            Esto lo calcula la vista comparando contra la fecha de
+            hoy, no lo decide esta pantalla. */}
+        {(p.matricula_vigente || p.seguro_vigente) && (
+          <span className="mt-2 flex flex-wrap gap-1.5">
+            <Etiqueta tono="marca">
+              <Escudo />
+              {p.matricula_vigente ? "Matrícula vigente" : "Seguro vigente"}
+            </Etiqueta>
           </span>
-          <span className="size-[3px] rounded-full bg-tinta-3" />
-          <span className="text-tinta-3 tabular-nums">{p.distancia}</span>
-        </span>
-
-        <span className="mt-2 flex flex-wrap gap-1.5">
-          <Etiqueta tono="marca">
-            <Escudo />
-            Verificado
-          </Etiqueta>
-          <Etiqueta tono="ok">Disponible hoy</Etiqueta>
-          <Etiqueta>Responde en {p.responde}</Etiqueta>
-        </span>
+        )}
       </span>
 
-      <span className="shrink-0 text-right">
-        <b className="block font-mono text-[13px] font-semibold text-tinta tabular-nums">
-          {p.visita}
-        </b>
-        <span className="mt-0.5 block text-[10px] text-tinta-3">visita</span>
-      </span>
-    </button>
+      <span className="shrink-0 self-center text-[15px] text-tinta-3">→</span>
+    </Link>
   );
 }
 

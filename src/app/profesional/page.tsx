@@ -3,20 +3,54 @@
    ------------------------------------------------------------
    Se ve en /profesional.
 
-   Lo interesante de esta pantalla es que muestra, para cada
-   oficio que activaste, si estás HABILITADO o no. Y eso no lo
-   calcula este archivo: le pregunta a la vista
-   profesionales_habilitados, que es la misma que usan las
-   reglas de la base para decidir qué pedidos te muestra.
+   Esta pantalla muestra, para cada oficio que activaste, si
+   estás HABILITADO o no. Y eso no lo calcula este archivo: le
+   pregunta a la vista profesionales_habilitados, que es la
+   misma que usan las reglas de la base para decidir qué pedidos
+   te muestra. O sea: lo que ves acá es exactamente lo que el
+   sistema cree. No hay forma de que se desincronicen.
 
-   O sea: lo que ves acá es exactamente lo que el sistema cree.
-   No hay forma de que se desincronicen.
+   NOVEDAD: ahora también muestra el estado de VERIFICACIÓN, que
+   es otra cosa. Podés tener los papeles cargados y vigentes y
+   aun así no estar verificado, porque verificado significa que
+   alguien los miró. Antes eso no existía: alcanzaba con
+   escribir una fecha.
    ============================================================ */
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { clienteServidor } from "@/lib/supabase-servidor";
 import FormularioProfesional from "@/components/FormularioProfesional";
+import EditarPerfil from "@/components/EditarPerfil";
+
+const VERIFICACION: Record<
+  string,
+  { texto: string; clase: string; explica: string }
+> = {
+  pendiente: {
+    texto: "SIN VERIFICAR",
+    clase: "bg-alerta-suave text-alerta",
+    explica:
+      "Cargaste tus datos, pero todavía nadie los revisó. Hasta que eso pase no aparecés en las búsquedas ni te llegan pedidos.",
+  },
+  en_revision: {
+    texto: "EN REVISIÓN",
+    clase: "bg-marca-suave text-marca",
+    explica:
+      "Estamos mirando tus papeles. Suele tardar poco. Te avisamos apenas haya novedades.",
+  },
+  verificado: {
+    texto: "VERIFICADO",
+    clase: "bg-ok-suave text-ok",
+    explica:
+      "Alguien revisó tus papeles y están en orden. El vecino ve el escudo al lado de tu nombre.",
+  },
+  rechazado: {
+    texto: "RECHAZADO",
+    clase: "bg-alerta-suave text-alerta",
+    explica: "",
+  },
+};
 
 export default async function Profesional() {
   const supabase = await clienteServidor();
@@ -35,7 +69,7 @@ export default async function Profesional() {
   const { data: perfiles } = await supabase
     .from("perfiles_profesionales")
     .select(
-      "id, oficio, matricula_nro, matricula_vence, seguro_vence, zonas, radio_km, activo",
+      "id, oficio, matricula_nro, matricula_vence, seguro_vence, cuit, bio, zonas, radio_km, activo, verificacion, motivo_rechazo",
     )
     .eq("persona_id", user.id)
     .order("creado_el");
@@ -46,9 +80,7 @@ export default async function Profesional() {
     .select("id");
 
   const idsHabilitados = new Set((habilitados ?? []).map((h) => h.id));
-  const nombreOficio = new Map(
-    (oficios ?? []).map((o) => [o.oficio, o.nombre_visible]),
-  );
+  const config = new Map((oficios ?? []).map((o) => [o.oficio, o]));
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
@@ -72,6 +104,12 @@ export default async function Profesional() {
           <div className="flex flex-col gap-2.5">
             {perfiles.map((p) => {
               const habilitado = idsHabilitados.has(p.id);
+              const oc = config.get(p.oficio);
+              const pidePapeles = Boolean(
+                oc?.exige_matricula || oc?.exige_seguro,
+              );
+              const ver = VERIFICACION[p.verificacion] ?? VERIFICACION.pendiente;
+
               return (
                 <div
                   key={p.id}
@@ -79,7 +117,7 @@ export default async function Profesional() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <b className="text-[14.5px] font-bold text-tinta">
-                      {nombreOficio.get(p.oficio) ?? p.oficio}
+                      {oc?.nombre_visible ?? p.oficio}
                     </b>
                     <span
                       className={`rounded-md px-2 py-1 text-[10.5px] font-bold tracking-wide ${
@@ -110,11 +148,50 @@ export default async function Profesional() {
                     {!p.activo && <span>Tu perfil está pausado.</span>}
                   </div>
 
+                  {/* La verificación solo tiene sentido en los oficios
+                      donde hay algo para verificar. A un pintor no le
+                      pedimos matrícula, así que tampoco lo hacemos
+                      esperar una revisión que no existe. */}
+                  {pidePapeles && (
+                    <div className="mt-2.5 rounded-xl border border-linea-2 bg-fondo p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11.5px] font-semibold text-tinta-2">
+                          Verificación de papeles
+                        </span>
+                        <span
+                          className={`rounded-md px-2 py-1 text-[10px] font-bold tracking-wide ${ver.clase}`}
+                        >
+                          {ver.texto}
+                        </span>
+                      </div>
+
+                      <p className="mt-1.5 text-[11.5px] leading-snug text-tinta-2">
+                        {p.verificacion === "rechazado"
+                          ? (p.motivo_rechazo ??
+                            "Tus papeles no pasaron la revisión.")
+                          : ver.explica}
+                      </p>
+
+                      {p.verificacion === "rechazado" && (
+                        <p className="mt-1.5 text-[11.5px] leading-snug text-tinta-3">
+                          Corregí lo que falta y volvés a la cola
+                          automáticamente.
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <EditarPerfil
+                    perfil={p}
+                    exigeMatricula={Boolean(oc?.exige_matricula)}
+                    exigeSeguro={Boolean(oc?.exige_seguro)}
+                  />
+
                   {!habilitado && (
                     <p className="mt-2 rounded-xl bg-alerta-suave px-3 py-2 text-[11.5px] leading-snug text-tinta-2">
-                      Te faltan papeles vigentes para este oficio, o el perfil
-                      está pausado. Mientras tanto no aparecés en las búsquedas
-                      ni te llegan pedidos.
+                      {pidePapeles && p.verificacion !== "verificado"
+                        ? "Mientras no estés verificado no aparecés en las búsquedas ni te llegan pedidos."
+                        : "Te faltan papeles vigentes para este oficio, o el perfil está pausado."}
                     </p>
                   )}
                 </div>
@@ -130,6 +207,13 @@ export default async function Profesional() {
           </div>
         )}
 
+        {/* El alta queda abajo y se anuncia como lo que es: agregar
+            OTRO oficio, no reemplazar el que ya tenés. */}
+        {perfiles && perfiles.length > 0 && (
+          <p className="mt-1 text-[12px] text-tinta-3">
+            ¿Trabajás de algo más? Agregá otro oficio.
+          </p>
+        )}
         <FormularioProfesional personaId={user.id} oficios={oficios ?? []} />
       </div>
     </main>
