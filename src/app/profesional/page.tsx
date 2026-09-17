@@ -1,59 +1,129 @@
 /* ============================================================
-   Mi perfil profesional
+   Mi oficio
    ------------------------------------------------------------
-   Se ve en /profesional.
+   Se ve en /profesional. Es el lado profesional de la persona.
 
-   Esta pantalla muestra, para cada oficio que activaste, si
-   estás HABILITADO o no. Y eso no lo calcula este archivo: le
-   pregunta a la vista profesionales_habilitados, que es la
-   misma que usan las reglas de la base para decidir qué pedidos
-   te muestra. O sea: lo que ves acá es exactamente lo que el
-   sistema cree. No hay forma de que se desincronicen.
+   ESTA PANTALLA SE REORDENÓ ENTERA.
+   Antes tenía cinco cosas apiladas: tu estado, tus datos, tus
+   papeles, el formulario de editar y el de alta de otro oficio,
+   este último desplegado y enorme aunque ya tuvieras perfil.
 
-   NOVEDAD: ahora también muestra el estado de VERIFICACIÓN, que
-   es otra cosa. Podés tener los papeles cargados y vigentes y
-   aun así no estar verificado, porque verificado significa que
-   alguien los miró. Antes eso no existía: alcanzaba con
-   escribir una fecha.
+   Ahora responde primero la única pregunta que trae al
+   profesional acá: "¿puedo trabajar, o qué me falta?". Eso va
+   arriba de todo, en una sola línea. Lo demás está plegado.
+
+   El detalle está en un <details> del propio navegador, sin
+   JavaScript. Menos código nuestro que se pueda romper.
    ============================================================ */
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { clienteServidor } from "@/lib/supabase-servidor";
-import FormularioProfesional from "@/components/FormularioProfesional";
+import AltaDeOficio from "@/components/AltaDeOficio";
 import EditarPerfil from "@/components/EditarPerfil";
 import SubirDocumentos from "@/components/SubirDocumentos";
 
-const VERIFICACION: Record<
-  string,
-  { texto: string; clase: string; explica: string }
-> = {
-  pendiente: {
-    texto: "SIN VERIFICAR",
-    clase: "bg-alerta-suave text-alerta",
-    explica:
-      "Cargaste tus datos, pero todavía nadie los revisó. Hasta que eso pase no aparecés en las búsquedas ni te llegan pedidos.",
-  },
-  en_revision: {
-    texto: "EN REVISIÓN",
-    clase: "bg-marca-suave text-marca",
-    explica:
-      "Estamos mirando tus papeles. Suele tardar poco. Te avisamos apenas haya novedades.",
-  },
-  verificado: {
-    texto: "VERIFICADO",
-    clase: "bg-ok-suave text-ok",
-    explica:
-      "Alguien revisó tus papeles y están en orden. El vecino ve el escudo al lado de tu nombre.",
-  },
-  rechazado: {
-    texto: "RECHAZADO",
-    clase: "bg-alerta-suave text-alerta",
-    explica: "",
-  },
+type Perfil = {
+  id: string;
+  oficio: string;
+  matricula_nro: string | null;
+  matricula_vence: string | null;
+  seguro_vence: string | null;
+  cuit: string | null;
+  bio: string | null;
+  zonas: string[] | null;
+  radio_km: number;
+  activo: boolean;
+  verificacion: string;
+  motivo_rechazo: string | null;
 };
 
-export default async function Profesional() {
+type Config = {
+  oficio: string;
+  nombre_visible: string;
+  exige_matricula: boolean;
+  exige_seguro: boolean;
+};
+
+// ------------------------------------------------------------
+//  La línea de arriba de todo.
+//  ------------------------------------------------------------
+//  Un solo mensaje, el más urgente. Si a un profesional le
+//  faltan tres cosas, mostrarle las tres juntas no lo ayuda:
+//  lo paraliza. Le decimos la primera.
+// ------------------------------------------------------------
+
+function proximoPaso(
+  p: Perfil,
+  oc: Config | undefined,
+  habilitado: boolean,
+  documentos: { tipo: string }[],
+): { texto: string; tono: "ok" | "espera" | "accion" } {
+  if (!p.activo) {
+    return {
+      texto: "Tu perfil está pausado. Reactivalo para volver a recibir pedidos.",
+      tono: "accion",
+    };
+  }
+
+  if (habilitado) {
+    return { texto: "Estás recibiendo pedidos de tu zona.", tono: "ok" };
+  }
+
+  const pidePapeles = Boolean(oc?.exige_matricula || oc?.exige_seguro);
+  const hoy = new Date().toISOString().slice(0, 10);
+
+  if (pidePapeles) {
+    if (p.verificacion === "rechazado") {
+      return {
+        texto:
+          p.motivo_rechazo ??
+          "Tus papeles no pasaron la revisión. Corregilos y volvés a la cola.",
+        tono: "accion",
+      };
+    }
+
+    if (p.verificacion === "en_revision") {
+      return {
+        texto: "Estamos revisando tus papeles. Te avisamos por mail.",
+        tono: "espera",
+      };
+    }
+
+    // Pendiente: ¿qué falta exactamente?
+    const tiene = new Set(documentos.map((d) => d.tipo));
+
+    if (oc?.exige_matricula && !tiene.has("matricula")) {
+      return { texto: "Subí la foto de tu matrícula.", tono: "accion" };
+    }
+    if (oc?.exige_seguro && !tiene.has("seguro")) {
+      return { texto: "Subí tu certificado de seguro.", tono: "accion" };
+    }
+  }
+
+  if (oc?.exige_matricula && !p.matricula_nro) {
+    return { texto: "Cargá tu número de matrícula.", tono: "accion" };
+  }
+  if (p.matricula_vence && p.matricula_vence < hoy) {
+    return { texto: "Tu matrícula está vencida. Actualizá la fecha.", tono: "accion" };
+  }
+  if (oc?.exige_seguro && (!p.seguro_vence || p.seguro_vence < hoy)) {
+    return { texto: "Tu seguro está vencido o sin cargar.", tono: "accion" };
+  }
+
+  return {
+    texto: "Falta que un revisor mire tus papeles.",
+    tono: "espera",
+  };
+}
+
+const TONOS = {
+  ok: "border-ok/30 bg-ok-suave text-tinta",
+  espera: "border-marca-2/30 bg-marca-suave text-tinta",
+  accion: "border-alerta/30 bg-alerta-suave text-tinta",
+};
+
+export default async function MiOficio() {
   const supabase = await clienteServidor();
 
   const {
@@ -75,13 +145,8 @@ export default async function Profesional() {
     .eq("persona_id", user.id)
     .order("creado_el");
 
-  // Los que el sistema considera habilitados hoy.
-  const { data: habilitados } = await supabase
-    .from("profesionales_habilitados")
-    .select("id");
-
-  // Los papeles que ya mandó, para no pedírselos de nuevo.
   const idsPerfiles = (perfiles ?? []).map((p) => p.id);
+
   const { data: documentos } = idsPerfiles.length
     ? await supabase
         .from("documentos_profesional")
@@ -90,120 +155,129 @@ export default async function Profesional() {
         .order("subido_el", { ascending: false })
     : { data: [] };
 
+  const { data: habilitados } = await supabase
+    .from("profesionales_habilitados")
+    .select("id");
+
   const idsHabilitados = new Set((habilitados ?? []).map((h) => h.id));
   const config = new Map((oficios ?? []).map((o) => [o.oficio, o]));
+  const tieneAlguno = (perfiles ?? []).length > 0;
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <header className="bg-marca px-5 pt-6 pb-6 text-white">
-        <Link
-          href="/"
-          className="text-[12.5px] font-semibold text-white/60 underline underline-offset-2"
-        >
-          ← Volver
-        </Link>
-        <h1 className="font-display mt-3 text-[23px] leading-tight font-extrabold">
-          Trabajar en AlToque
+      <header className="bg-[#16211f] px-5 pt-6 pb-6 text-white">
+        <h1 className="font-display text-[23px] leading-tight font-extrabold">
+          Mi oficio
         </h1>
-        <p className="mt-1.5 text-[13px] text-white/60">
-          Activá tu oficio y empezá a recibir pedidos de tu zona.
+        <p className="mt-1.5 text-[13px] text-white/50">
+          {tieneAlguno
+            ? "Tu perfil profesional y los papeles que lo respaldan."
+            : "Del otro lado del mostrador."}
         </p>
+
+        {tieneAlguno && (
+          <div className="mt-4 flex gap-2">
+            <Link
+              href="/trabajos"
+              className="flex-1 rounded-xl bg-acento py-2.5 text-center text-[13.5px] font-bold text-acento-tinta"
+            >
+              Trabajos disponibles
+            </Link>
+            <Link
+              href="/mis-trabajos"
+              className="flex-1 rounded-xl border border-white/20 py-2.5 text-center text-[13.5px] font-bold text-white"
+            >
+              Mis trabajos
+            </Link>
+          </div>
+        )}
       </header>
 
-      <div className="flex flex-col gap-4 px-5 pt-5">
-        {perfiles && perfiles.length > 0 && (
-          <div className="flex flex-col gap-2.5">
-            {perfiles.map((p) => {
-              const habilitado = idsHabilitados.has(p.id);
-              const oc = config.get(p.oficio);
-              const pidePapeles = Boolean(
-                oc?.exige_matricula || oc?.exige_seguro,
-              );
-              const ver = VERIFICACION[p.verificacion] ?? VERIFICACION.pendiente;
+      <div className="flex flex-col gap-3 px-5 pt-5">
+        {(perfiles ?? []).map((p) => {
+          const oc = config.get(p.oficio);
+          const habilitado = idsHabilitados.has(p.id);
+          const pidePapeles = Boolean(oc?.exige_matricula || oc?.exige_seguro);
+          const suyos = (documentos ?? []).filter((d) => d.perfil_id === p.id);
+          const paso = proximoPaso(p, oc, habilitado, suyos);
 
-              return (
-                <div
-                  key={p.id}
-                  className="rounded-2xl border border-linea bg-white p-3.5"
+          return (
+            <div
+              key={p.id}
+              className="rounded-2xl border border-linea bg-white p-4"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <b className="font-display text-[16px] font-bold text-tinta">
+                  {oc?.nombre_visible ?? p.oficio}
+                </b>
+                <span
+                  className={`rounded-md px-2 py-1 text-[10.5px] font-bold tracking-wide ${
+                    habilitado
+                      ? "bg-ok-suave text-ok"
+                      : "bg-alerta-suave text-alerta"
+                  }`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <b className="text-[14.5px] font-bold text-tinta">
-                      {oc?.nombre_visible ?? p.oficio}
-                    </b>
-                    <span
-                      className={`rounded-md px-2 py-1 text-[10.5px] font-bold tracking-wide ${
-                        habilitado
-                          ? "bg-ok-suave text-ok"
-                          : "bg-alerta-suave text-alerta"
-                      }`}
-                    >
-                      {habilitado ? "RECIBIENDO PEDIDOS" : "SIN HABILITAR"}
-                    </span>
+                  {habilitado ? "ACTIVO" : "SIN HABILITAR"}
+                </span>
+              </div>
+
+              {/* La línea que contesta la pregunta. */}
+              <p
+                className={`mt-2.5 rounded-xl border px-3.5 py-3 text-[13px] leading-snug ${TONOS[paso.tono]}`}
+              >
+                {paso.texto}
+              </p>
+
+              <p className="mt-2.5 text-[12px] text-tinta-3">
+                {p.zonas && p.zonas.length > 0
+                  ? p.zonas.join(" · ")
+                  : "Sin zonas cargadas"}
+                {` · hasta ${p.radio_km} km`}
+              </p>
+
+              {/* Todo lo demás, plegado. Lo mirás una vez y no
+                  volvés nunca, así que no puede ocupar pantalla
+                  para siempre. */}
+              <details className="group mt-3">
+                <summary className="cursor-pointer list-none rounded-xl border border-linea bg-fondo px-3.5 py-2.5 text-[12.5px] font-semibold text-tinta-2 transition hover:border-marca-2">
+                  Papeles y datos
+                  <span className="float-right text-tinta-3 group-open:hidden">
+                    ▾
+                  </span>
+                  <span className="float-right hidden text-tinta-3 group-open:inline">
+                    ▴
+                  </span>
+                </summary>
+
+                <div className="mt-2.5">
+                  <div className="flex flex-col gap-0.5 rounded-xl bg-fondo p-3 text-[12px] text-tinta-2">
+                    <Dato
+                      etiqueta="Matrícula"
+                      valor={
+                        p.matricula_nro
+                          ? `${p.matricula_nro}${p.matricula_vence ? ` · vence ${p.matricula_vence}` : ""}`
+                          : null
+                      }
+                    />
+                    <Dato
+                      etiqueta="Seguro"
+                      valor={p.seguro_vence ? `vence ${p.seguro_vence}` : null}
+                    />
+                    <Dato etiqueta="CUIT" valor={p.cuit} />
                   </div>
 
-                  <p className="mt-1.5 text-[12.5px] text-tinta-2">
-                    {p.zonas && p.zonas.length > 0
-                      ? p.zonas.join(" · ")
-                      : "Sin zonas cargadas"}
-                    {` · hasta ${p.radio_km} km`}
-                  </p>
-
-                  <div className="mt-2 flex flex-col gap-0.5 border-t border-linea-2 pt-2 text-[11.5px] text-tinta-3">
-                    {p.matricula_nro && (
-                      <span>
-                        Matrícula {p.matricula_nro}
-                        {p.matricula_vence && ` · vence ${p.matricula_vence}`}
-                      </span>
-                    )}
-                    {p.seguro_vence && <span>Seguro vence {p.seguro_vence}</span>}
-                    {!p.activo && <span>Tu perfil está pausado.</span>}
-                  </div>
-
-                  {/* La verificación solo tiene sentido en los oficios
-                      donde hay algo para verificar. A un pintor no le
-                      pedimos matrícula, así que tampoco lo hacemos
-                      esperar una revisión que no existe. */}
                   {pidePapeles && (
-                    <div className="mt-2.5 rounded-xl border border-linea-2 bg-fondo p-3">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11.5px] font-semibold text-tinta-2">
-                          Verificación de papeles
-                        </span>
-                        <span
-                          className={`rounded-md px-2 py-1 text-[10px] font-bold tracking-wide ${ver.clase}`}
-                        >
-                          {ver.texto}
-                        </span>
-                      </div>
-
-                      <p className="mt-1.5 text-[11.5px] leading-snug text-tinta-2">
-                        {p.verificacion === "rechazado"
-                          ? (p.motivo_rechazo ??
-                            "Tus papeles no pasaron la revisión.")
-                          : ver.explica}
-                      </p>
-
-                      {p.verificacion === "rechazado" && (
-                        <p className="mt-1.5 text-[11.5px] leading-snug text-tinta-3">
-                          Corregí lo que falta y volvés a la cola
-                          automáticamente.
-                        </p>
-                      )}
-
-                      <SubirDocumentos
-                        perfilId={p.id}
-                        personaId={user.id}
-                        tipos={
-                          [
-                            oc?.exige_matricula ? "matricula" : null,
-                            oc?.exige_seguro ? "seguro" : null,
-                          ].filter(Boolean) as ("matricula" | "seguro")[]
-                        }
-                        yaSubidos={(documentos ?? []).filter(
-                          (d) => d.perfil_id === p.id,
-                        )}
-                      />
-                    </div>
+                    <SubirDocumentos
+                      perfilId={p.id}
+                      personaId={user.id}
+                      tipos={
+                        [
+                          oc?.exige_matricula ? "matricula" : null,
+                          oc?.exige_seguro ? "seguro" : null,
+                        ].filter(Boolean) as ("matricula" | "seguro")[]
+                      }
+                      yaSubidos={suyos}
+                    />
                   )}
 
                   <EditarPerfil
@@ -211,36 +285,35 @@ export default async function Profesional() {
                     exigeMatricula={Boolean(oc?.exige_matricula)}
                     exigeSeguro={Boolean(oc?.exige_seguro)}
                   />
-
-                  {!habilitado && (
-                    <p className="mt-2 rounded-xl bg-alerta-suave px-3 py-2 text-[11.5px] leading-snug text-tinta-2">
-                      {pidePapeles && p.verificacion !== "verificado"
-                        ? "Mientras no estés verificado no aparecés en las búsquedas ni te llegan pedidos."
-                        : "Te faltan papeles vigentes para este oficio, o el perfil está pausado."}
-                    </p>
-                  )}
                 </div>
-              );
-            })}
+              </details>
+            </div>
+          );
+        })}
 
-            <Link
-              href="/trabajos"
-              className="rounded-xl bg-marca py-3.5 text-center text-[15px] font-bold text-white"
-            >
-              Ver trabajos disponibles
-            </Link>
-          </div>
-        )}
-
-        {/* El alta queda abajo y se anuncia como lo que es: agregar
-            OTRO oficio, no reemplazar el que ya tenés. */}
-        {perfiles && perfiles.length > 0 && (
-          <p className="mt-1 text-[12px] text-tinta-3">
-            ¿Trabajás de algo más? Agregá otro oficio.
-          </p>
-        )}
-        <FormularioProfesional personaId={user.id} oficios={oficios ?? []} />
+        <AltaDeOficio
+          personaId={user.id}
+          oficios={oficios ?? []}
+          yaTieneAlguno={tieneAlguno}
+        />
       </div>
     </main>
+  );
+}
+
+function Dato({
+  etiqueta,
+  valor,
+}: {
+  etiqueta: string;
+  valor: string | null | undefined;
+}) {
+  return (
+    <span className="flex justify-between gap-3">
+      <span className="text-tinta-3">{etiqueta}</span>
+      <span className={valor ? "font-semibold text-tinta" : "text-tinta-3"}>
+        {valor ?? "sin cargar"}
+      </span>
+    </span>
   );
 }

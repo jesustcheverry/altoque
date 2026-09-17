@@ -205,32 +205,14 @@ export default async function Inicio() {
         nombresDeOficio={nombresDeOficio}
         error={errorPro?.message}
       />
-      <BannerProfesional />
     </main>
   );
 }
 
-// La puerta de entrada del otro lado del mercado. Va abajo de
-// todo a propósito: el que abre la app es casi siempre alguien
-// con un problema en su casa, no un gasista buscando trabajo.
-function BannerProfesional() {
-  return (
-    <section className="px-5 pt-7">
-      <Link
-        href="/profesional"
-        className="block rounded-2xl bg-[#16211f] p-4 text-white"
-      >
-        <b className="font-display block text-[15px] font-bold">
-          ¿Trabajás de algún oficio?
-        </b>
-        <span className="mt-1 block text-[12.5px] leading-snug text-white/60">
-          Activá tu perfil y recibí pedidos de tu zona. Sin comisión hasta que
-          cobres un trabajo.
-        </span>
-      </Link>
-    </section>
-  );
-}
+// (Acá vivía el banner de "¿Trabajás de algún oficio?". Lo
+// sacamos cuando aparecieron las pestañas: pasaba a haber dos
+// puertas para lo mismo, y la invitación quedó mejor adentro de
+// "Mi oficio", que es donde alguien la busca.)
 
 type Inmueble = {
   alias: string;
@@ -415,21 +397,70 @@ function Oficios({
 
 function BannerUrgencias() {
   return (
-    <section className="px-5 pt-5">
-      <button className="flex w-full items-center gap-3 rounded-2xl border border-alerta/25 bg-alerta-suave p-3.5 text-left">
+    <section className="flex flex-col gap-2.5 px-5 pt-5">
+      {/* ------------------------------------------------------
+          ACÁ HABÍA UNA MENTIRA.
+          Decía "Urgencias 24 hs · Llega alguien en menos de 45
+          min", y era un botón que no hacía nada. Esa promesa
+          solo sería verdad con gente de guardia, turnos y alguna
+          penalidad por no llegar. Nada de eso existe.
+
+          Prometer un tiempo que no podés cumplir es peor que no
+          prometer nada: el vecino se relaja y se queda esperando.
+
+          Lo que sí es verdad es que un pedido marcado como
+          urgente se destaca en la pantalla de los profesionales.
+          Eso es lo que promete ahora, ni un centímetro más.
+          ------------------------------------------------------ */}
+      <Link
+        href="/pedidos/nuevo?urgencia=urgente"
+        className="flex items-center gap-3 rounded-2xl border border-alerta/25 bg-alerta-suave p-3.5 text-left transition hover:border-alerta/50"
+      >
         <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-alerta text-white">
           <Alerta />
         </span>
         <span>
           <b className="block text-[13.5px] font-bold text-tinta">
-            Urgencias 24 hs
+            ¿Es una urgencia?
           </b>
           <span className="mt-0.5 block text-xs leading-snug text-tinta-2">
-            Pérdida de gas, sin luz, caño roto o puerta trabada. Llega alguien en
-            menos de 45 min.
+            Sin luz, caño roto, puerta trabada. Publicalo marcado como urgente
+            y se destaca arriba de todo para los profesionales habilitados.
           </span>
         </span>
-      </button>
+      </Link>
+
+      {/* ------------------------------------------------------
+          Y esto es lo que ninguna app del rubro dice, porque
+          manda a la gente afuera de la app.
+
+          Si alguien huele gas, lo peor que le podemos ofrecer es
+          esperar presupuestos. Que llame a la distribuidora, que
+          va gratis y en el día. Perdemos un pedido y ganamos lo
+          único que importa en este negocio.
+          ------------------------------------------------------ */}
+      <a
+        href="tel:08009991050"
+        className="rounded-2xl border border-linea bg-fondo px-3.5 py-3"
+      >
+        <b className="block text-[12.5px] font-bold text-tinta">
+          ¿Olés a gas? No publiques un pedido.
+        </b>
+        <span className="mt-0.5 block text-[11.5px] leading-snug text-tinta-2">
+          Abrí las ventanas, no toques ninguna llave de luz y llamá a tu
+          distribuidora. Van gratis y sin turno.
+        </span>
+        <span className="mt-1.5 block text-[12.5px] font-bold text-marca underline underline-offset-2">
+          Metrogas · 0800-999-1050 · las 24 horas
+        </span>
+      </a>
+
+      <Link
+        href="/emergencias"
+        className="py-0.5 text-center text-[12px] font-semibold text-tinta-3 underline underline-offset-2"
+      >
+        Todos los números de emergencia
+      </Link>
     </section>
   );
 }

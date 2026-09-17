@@ -9,6 +9,8 @@
 import type { Metadata } from "next";
 import { Archivo, Public_Sans } from "next/font/google";
 import "./globals.css";
+import Pestanias from "@/components/Pestanias";
+import { clienteServidor } from "@/lib/supabase-servidor";
 
 // Next descarga estas fuentes de Google y las sirve desde tu propio
 // servidor, así la app no depende de que Google esté disponible.
@@ -32,14 +34,24 @@ export const metadata: Metadata = {
     "Encontrá electricistas, gasistas, plomeros y pintores matriculados en tu barrio. Pedí presupuesto y compará antes de decidir.",
 };
 
-export default function RootLayout({
+// Ahora el layout es "async" porque pregunta quién entró. Eso lo
+// necesita la barra de pestañas: si no entraste todavía, no
+// aparece ninguna. Alguien que llega por primera vez no necesita
+// elegir un bando, necesita ver que puede pedir un presupuesto.
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const supabase = await clienteServidor();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html lang="es-AR">
       <body
         className={`${archivo.variable} ${publicSans.variable} font-sans antialiased`}
       >
+        <Pestanias hayUsuario={Boolean(user)} />
         {children}
       </body>
     </html>

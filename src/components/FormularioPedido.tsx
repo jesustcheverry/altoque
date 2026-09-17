@@ -44,10 +44,12 @@ export default function FormularioPedido({
   oficios,
   inmuebles,
   oficioInicial,
+  urgenciaInicial,
 }: {
   oficios: Oficio[];
   inmuebles: Inmueble[];
   oficioInicial?: string;
+  urgenciaInicial?: string;
 }) {
   const router = useRouter();
 
@@ -58,7 +60,14 @@ export default function FormularioPedido({
   );
   const [inmuebleId, setInmuebleId] = useState(inmuebles[0]?.id ?? "");
   const [descripcion, setDescripcion] = useState("");
-  const [urgencia, setUrgencia] = useState("esta_semana");
+  // Si llegó desde el cartel de urgencias, viene ya marcado.
+  const [urgencia, setUrgencia] = useState(
+    urgenciaInicial === "urgente" ||
+      urgenciaInicial === "esta_semana" ||
+      urgenciaInicial === "solo_presupuesto"
+      ? urgenciaInicial
+      : "esta_semana",
+  );
   const [franja, setFranja] = useState("Tarde 13–18");
 
   const [error, setError] = useState<string | null>(null);

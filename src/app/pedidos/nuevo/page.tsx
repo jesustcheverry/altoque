@@ -5,6 +5,9 @@
    de la pantalla de inicio, llega con el oficio ya elegido:
    /pedidos/nuevo?oficio=gasista
 
+   También puede llegar con la urgencia ya marcada, desde el
+   cartel de urgencias:  /pedidos/nuevo?urgencia=urgente
+
    Esta pantalla solo junta los datos que necesita el formulario
    y se los pasa. El formulario es el que escribe en la base.
    ============================================================ */
@@ -17,9 +20,9 @@ import FormularioPedido from "@/components/FormularioPedido";
 export default async function NuevoPedido({
   searchParams,
 }: {
-  searchParams: Promise<{ oficio?: string }>;
+  searchParams: Promise<{ oficio?: string; urgencia?: string }>;
 }) {
-  const { oficio } = await searchParams;
+  const { oficio, urgencia } = await searchParams;
   const supabase = await clienteServidor();
 
   const {
@@ -75,6 +78,7 @@ export default async function NuevoPedido({
           oficios={oficios ?? []}
           inmuebles={inmuebles}
           oficioInicial={oficio}
+          urgenciaInicial={urgencia}
         />
       )}
     </main>
