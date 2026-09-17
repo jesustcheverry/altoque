@@ -15,6 +15,8 @@ import { notFound, redirect } from "next/navigation";
 import { clienteServidor } from "@/lib/supabase-servidor";
 import BotonAceptar from "@/components/BotonAceptar";
 import SubirFotos from "@/components/SubirFotos";
+import BotonAvanzar from "@/components/BotonAvanzar";
+import FormularioResena from "@/components/FormularioResena";
 import { aPesos } from "@/lib/plata";
 
 const ESTADOS: Record<string, { texto: string; clase: string }> = {
@@ -99,6 +101,23 @@ export default async function PedidoDetalle({
       .filter((u): u is string => Boolean(u));
   }
 
+  // El trabajo que nació al aceptar un presupuesto, si ya existe.
+  const { data: trabajo } = await supabase
+    .from("trabajos")
+    .select(
+      "id, estado, agendado_para, en_camino_el, empezo_el, termino_el, confirmado_el",
+    )
+    .eq("pedido_id", id)
+    .maybeSingle();
+
+  const { data: resena } = trabajo
+    ? await supabase
+        .from("resenas")
+        .select("id, estrellas, texto")
+        .eq("trabajo_id", trabajo.id)
+        .maybeSingle()
+    : { data: null };
+
   const vigentes = (presupuestos ?? []).filter((p) => p.estado === "enviado");
   const aceptado = (presupuestos ?? []).find((p) => p.estado === "aceptado");
   const estado = ESTADOS[pedido.estado] ?? ESTADOS.borrador;
@@ -149,6 +168,89 @@ export default async function PedidoDetalle({
             </p>
           </div>
         )}
+
+        {trabajo && (
+          <div className="rounded-2xl border border-linea bg-white p-4">
+            <b className="font-display block text-[14px] font-bold text-tinta">
+              Estado del trabajo
+            </b>
+
+            <div className="mt-3">
+              <Paso hecho texto="Aceptaste el presupuesto" />
+              <Paso
+                hecho={Boolean(trabajo.en_camino_el)}
+                texto="El profesional salió para allá"
+              />
+              <Paso
+                hecho={Boolean(trabajo.empezo_el)}
+                texto="Llegó y empezó el trabajo"
+              />
+              <Paso
+                hecho={Boolean(trabajo.termino_el)}
+                texto="Marcó que terminó"
+              />
+              <Paso
+                hecho={Boolean(trabajo.confirmado_el)}
+                texto="Confirmaste y se liberó el pago"
+                ultimo
+              />
+            </div>
+
+            {trabajo.estado === "terminado" && (
+              <div className="mt-4 flex flex-col gap-2">
+                <p className="text-[12px] leading-snug text-tinta-2">
+                  El profesional marcó que terminó. Si está todo bien,
+                  confirmalo y se le libera el pago. Si hay un problema, abrí
+                  una disputa y el pago queda frenado.
+                </p>
+                <BotonAvanzar
+                  trabajoId={trabajo.id}
+                  nuevo="confirmado"
+                  texto="Confirmar que terminó"
+                />
+                <BotonAvanzar
+                  trabajoId={trabajo.id}
+                  nuevo="en_disputa"
+                  texto="Tengo un problema"
+                  tono="suave"
+                />
+                <p className="text-center text-[11px] text-tinta-3">
+                  Si no hacés nada, se confirma solo a las 72 horas.
+                </p>
+              </div>
+            )}
+
+            {trabajo.estado === "en_disputa" && (
+              <p className="mt-3 rounded-xl bg-alerta-suave px-3 py-2.5 text-[12px] leading-snug text-tinta-2">
+                Abriste una disputa. El pago quedó frenado hasta que se
+                resuelva.
+              </p>
+            )}
+          </div>
+        )}
+
+        {trabajo &&
+          (trabajo.estado === "confirmado" || trabajo.estado === "pagado") &&
+          (resena ? (
+            <div className="rounded-2xl border border-linea bg-white p-4">
+              <b className="font-display block text-[14px] font-bold text-tinta">
+                Tu reseña
+              </b>
+              <div className="mt-1 text-[16px] text-acento">
+                {"\u2605".repeat(resena.estrellas)}
+                <span className="text-linea">
+                  {"\u2605".repeat(5 - resena.estrellas)}
+                </span>
+              </div>
+              {resena.texto && (
+                <p className="mt-1.5 text-[13px] leading-relaxed text-tinta-2">
+                  {resena.texto}
+                </p>
+              )}
+            </div>
+          ) : (
+            <FormularioResena trabajoId={trabajo.id} autorId={user.id} />
+          ))}
 
         {/* Las fotos. Van arriba porque son lo que más mejora la
             calidad de los presupuestos que vas a recibir. */}
@@ -272,4 +374,52 @@ function fecha(iso: string) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+// Un pasito del recorrido. Lo hecho queda marcado; lo que falta,
+// en gris. Sirve para que el cliente sepa en qué anda sin tener
+// que llamar a nadie.
+function Paso({
+  hecho,
+  texto,
+  ultimo = false,
+}: {
+  hecho: boolean;
+  texto: string;
+  ultimo?: boolean;
+}) {
+  return (
+    <div className="relative flex gap-3 pb-3.5 last:pb-0">
+      {!ultimo && (
+        <span
+          className={`absolute top-4 left-[7px] bottom-0 w-0.5 ${hecho ? "bg-ok" : "bg-linea"}`}
+        />
+      )}
+      <span
+        className={`z-10 mt-0.5 grid size-4 shrink-0 place-items-center rounded-full ${
+          hecho ? "bg-ok text-white" : "border-2 border-linea bg-white"
+        }`}
+      >
+        {hecho && (
+          <svg
+            width="9"
+            height="9"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M5 12.5l4.5 4.5L19 7" />
+          </svg>
+        )}
+      </span>
+      <span
+        className={`text-[13px] ${hecho ? "font-medium text-tinta" : "text-tinta-3"}`}
+      >
+        {texto}
+      </span>
+    </div>
+  );
 }

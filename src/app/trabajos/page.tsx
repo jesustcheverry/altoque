@@ -67,12 +67,20 @@ export default async function Trabajos() {
                 : `Pedidos abiertos de ${habilitados.map((h) => h.oficio).join(", ")}.`}
             </p>
           </div>
-          <Link
-            href="/profesional"
-            className="shrink-0 text-[12px] font-semibold text-white/70 underline underline-offset-2"
-          >
-            Mi perfil
-          </Link>
+          <span className="flex shrink-0 flex-col items-end gap-1 text-[12px] font-semibold">
+            <Link
+              href="/mis-trabajos"
+              className="text-white/70 underline underline-offset-2"
+            >
+              Mis trabajos
+            </Link>
+            <Link
+              href="/profesional"
+              className="text-white/70 underline underline-offset-2"
+            >
+              Mi perfil
+            </Link>
+          </span>
         </div>
       </header>
 
