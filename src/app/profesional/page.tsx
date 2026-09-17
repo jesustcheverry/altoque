@@ -22,6 +22,7 @@ import { redirect } from "next/navigation";
 import { clienteServidor } from "@/lib/supabase-servidor";
 import FormularioProfesional from "@/components/FormularioProfesional";
 import EditarPerfil from "@/components/EditarPerfil";
+import SubirDocumentos from "@/components/SubirDocumentos";
 
 const VERIFICACION: Record<
   string,
@@ -78,6 +79,16 @@ export default async function Profesional() {
   const { data: habilitados } = await supabase
     .from("profesionales_habilitados")
     .select("id");
+
+  // Los papeles que ya mandó, para no pedírselos de nuevo.
+  const idsPerfiles = (perfiles ?? []).map((p) => p.id);
+  const { data: documentos } = idsPerfiles.length
+    ? await supabase
+        .from("documentos_profesional")
+        .select("id, perfil_id, tipo, subido_el")
+        .in("perfil_id", idsPerfiles)
+        .order("subido_el", { ascending: false })
+    : { data: [] };
 
   const idsHabilitados = new Set((habilitados ?? []).map((h) => h.id));
   const config = new Map((oficios ?? []).map((o) => [o.oficio, o]));
@@ -178,6 +189,20 @@ export default async function Profesional() {
                           automáticamente.
                         </p>
                       )}
+
+                      <SubirDocumentos
+                        perfilId={p.id}
+                        personaId={user.id}
+                        tipos={
+                          [
+                            oc?.exige_matricula ? "matricula" : null,
+                            oc?.exige_seguro ? "seguro" : null,
+                          ].filter(Boolean) as ("matricula" | "seguro")[]
+                        }
+                        yaSubidos={(documentos ?? []).filter(
+                          (d) => d.perfil_id === p.id,
+                        )}
+                      />
                     </div>
                   )}
 

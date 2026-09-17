@@ -43,6 +43,32 @@ export default async function Verificaciones() {
 
   const config = new Map((oficios ?? []).map((o) => [o.oficio, o]));
 
+  // Los papeles de todos los que están en la cola.
+  const idsEnCola = (cola ?? []).map((p) => p.perfil_id);
+  const { data: documentos } = idsEnCola.length
+    ? await supabase
+        .from("documentos_profesional")
+        .select("id, perfil_id, tipo, ruta, subido_el")
+        .in("perfil_id", idsEnCola)
+        .order("subido_el", { ascending: false })
+    : { data: [] };
+
+  // Los archivos del bucket son privados: no se abren pegando la
+  // dirección. Hay que pedir un permiso temporal, que es esto.
+  // Dura cinco minutos y después el enlace deja de servir.
+  const enlaces = new Map<string, string>();
+  if (documentos && documentos.length > 0) {
+    const { data: firmados } = await supabase.storage
+      .from("documentos")
+      .createSignedUrls(
+        documentos.map((d) => d.ruta),
+        300,
+      );
+    for (const f of firmados ?? []) {
+      if (f.path && f.signedUrl) enlaces.set(f.path, f.signedUrl);
+    }
+  }
+
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
       <header className="bg-[#16211f] px-5 pt-6 pb-6 text-white">
@@ -133,14 +159,57 @@ export default async function Verificaciones() {
                   <Dato etiqueta="CUIT" valor={p.cuit} />
                 </div>
 
-                {/* La parte incómoda, dicha en voz alta. */}
-                {pidePapeles && (
-                  <p className="mt-2.5 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2.5 text-[11.5px] leading-snug text-tinta-2">
-                    Todavía no podés ver ningún documento: esto es lo que la
-                    persona escribió, nada más. Verificar esto tal cual está
-                    sería firmar sin leer.
-                  </p>
-                )}
+                {/* Los papeles. Esto es lo que mirás antes de decidir. */}
+                {pidePapeles && (() => {
+                  const suyos = (documentos ?? []).filter(
+                    (d) => d.perfil_id === p.perfil_id,
+                  );
+
+                  if (suyos.length === 0) {
+                    return (
+                      <p className="mt-2.5 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2.5 text-[11.5px] leading-snug text-tinta-2">
+                        No mandó ningún papel todavía. Lo único que hay es lo
+                        que escribió. Verificar esto sería firmar sin leer.
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <div className="mt-2.5 flex flex-col gap-1.5">
+                      {suyos.map((d) => {
+                        const url = enlaces.get(d.ruta);
+                        return (
+                          <a
+                            key={d.id}
+                            href={url ?? "#"}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center justify-between gap-2 rounded-xl border border-marca-2 bg-marca-suave px-3 py-2.5"
+                          >
+                            <span>
+                              <b className="block text-[12.5px] font-semibold text-tinta">
+                                {d.tipo === "matricula"
+                                  ? "Matrícula"
+                                  : d.tipo === "seguro"
+                                    ? "Certificado de seguro"
+                                    : d.tipo}
+                              </b>
+                              <span className="block text-[11px] text-tinta-3">
+                                Enviado el{" "}
+                                {new Date(d.subido_el).toLocaleDateString(
+                                  "es-AR",
+                                )}
+                              </span>
+                            </span>
+                            <span className="shrink-0 text-[11.5px] font-bold text-marca underline underline-offset-2">
+                              Abrir →
+                            </span>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
 
                 <BotonVerificar perfilId={p.perfil_id} />
               </div>
