@@ -24,7 +24,7 @@ export default function BotonSalir() {
   return (
     <button
       onClick={salir}
-      className="text-[12px] font-semibold text-white/60 underline underline-offset-2"
+      className="text-apoyo font-semibold text-white/60 underline underline-offset-2"
     >
       Salir
     </button>

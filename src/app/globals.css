@@ -26,10 +26,27 @@
   --color-linea-2: #edf1ec; /* bordes internos, más suaves */
   --color-fondo: #f3f6f2; /* fondos de tarjetas */
 
+  --color-marca-oscura: #16211f; /* encabezados del lado profesional */
+  --color-marca-noche: #0b1413; /* la barra de pestañas */
+
   --color-alerta: #b4381c; /* urgencias */
   --color-alerta-suave: #fae7e1;
   --color-ok: #2f7d57; /* confirmaciones */
   --color-ok-suave: #e1f0e7;
+
+  /* --- Tamaños de letra ---
+     Antes había 22 tamaños distintos desparramados por las
+     pantallas, muchos separados por medio píxel. Medio píxel no
+     se percibe como jerarquía: se percibe como desprolijidad.
+
+     Estos seis alcanzan para toda la app. Si alguna vez te falta
+     uno, casi siempre es señal de que el problema es otro. */
+  --text-etiqueta: 11px; /* badges, "URGENTE", notas al pie */
+  --text-apoyo: 12.5px; /* texto secundario, explicaciones */
+  --text-cuerpo: 14px; /* el texto normal */
+  --text-destacado: 16px; /* títulos de tarjeta, nombres */
+  --text-titulo: 23px; /* título de pantalla */
+  --text-numero: 30px; /* los números de emergencia */
 
   /* --- Tipografías ---
      Los valores vienen de layout.tsx, donde se cargan las fuentes. */

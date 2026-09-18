@@ -92,24 +92,24 @@ export default async function TrabajoDetalle({
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white">
-      <header className="bg-[#16211f] px-5 pt-6 pb-6 text-white">
+      <header className="bg-marca-oscura px-5 pt-6 pb-6 text-white">
         <Link
           href="/trabajos"
-          className="text-[12.5px] font-semibold text-white/50 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/50 underline underline-offset-2"
         >
           ← Volver a trabajos
         </Link>
-        <h1 className="font-display mt-3 text-[20px] leading-snug font-extrabold">
+        <h1 className="font-display mt-3 text-titulo leading-snug font-extrabold">
           {URGENCIAS[pedido.urgencia] ?? pedido.urgencia}
         </h1>
-        <p className="mt-1 text-[13px] text-white/50">
+        <p className="mt-1 text-apoyo text-white/50">
           {pedido.oficio}
           {pedido.franja_horaria && ` · ${pedido.franja_horaria}`}
         </p>
       </header>
 
       <div className="border-b border-linea px-5 py-4">
-        <p className="text-[14px] leading-relaxed text-tinta">
+        <p className="text-cuerpo leading-relaxed text-tinta">
           “{pedido.descripcion}”
         </p>
         {fotosFirmadas.length > 0 && (
@@ -126,7 +126,7 @@ export default async function TrabajoDetalle({
           </div>
         )}
 
-        <p className="mt-3 text-[11.5px] leading-snug text-tinta-3">
+        <p className="mt-3 text-etiqueta leading-snug text-tinta-3">
           La dirección exacta y el teléfono del cliente aparecen cuando acepta
           tu presupuesto.
         </p>
@@ -134,13 +134,13 @@ export default async function TrabajoDetalle({
 
       {mios && mios.length > 0 && (
         <div className="border-b border-linea bg-fondo px-5 py-4">
-          <p className="mb-2 text-[12px] font-semibold text-tinta">
+          <p className="mb-2 text-apoyo font-semibold text-tinta">
             Ya mandaste {mios.length === 1 ? "un presupuesto" : `${mios.length} presupuestos`}
           </p>
           {mios.map((m) => (
             <div
               key={m.id}
-              className="flex items-center justify-between py-1 text-[13px]"
+              className="flex items-center justify-between py-1 text-apoyo"
             >
               <span className="text-tinta-2">{estadoTexto(m.estado)}</span>
               <b className="font-mono font-semibold text-tinta tabular-nums">
@@ -152,18 +152,18 @@ export default async function TrabajoDetalle({
       )}
 
       {pedido.estado !== "publicado" ? (
-        <p className="m-5 rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-[13.5px] leading-relaxed text-tinta-3">
+        <p className="m-5 rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-cuerpo leading-relaxed text-tinta-3">
           Este pedido ya no está abierto.
         </p>
       ) : !perfil ? (
         <div className="m-5 rounded-2xl border border-dashed border-linea px-4 py-8 text-center">
-          <p className="text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="text-cuerpo leading-relaxed text-tinta-3">
             No estás habilitado en {pedido.oficio}. Revisá tus papeles para
             poder presupuestar.
           </p>
           <Link
             href="/profesional"
-            className="mt-4 inline-block rounded-xl bg-acento px-5 py-3 text-[14.5px] font-bold text-acento-tinta"
+            className="mt-4 inline-block rounded-xl bg-acento px-5 py-3 text-cuerpo font-bold text-acento-tinta"
           >
             Ver mi perfil
           </Link>

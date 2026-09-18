@@ -49,25 +49,25 @@ export default async function Trabajos() {
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <header className="bg-[#16211f] px-5 pt-6 pb-6 text-white">
+      <header className="bg-marca-oscura px-5 pt-6 pb-6 text-white">
         <Link
           href="/"
-          className="text-[12.5px] font-semibold text-white/50 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/50 underline underline-offset-2"
         >
           ← Volver
         </Link>
         <div className="mt-3 flex items-end justify-between gap-3">
           <div>
-            <h1 className="font-display text-[23px] leading-tight font-extrabold">
+            <h1 className="font-display text-titulo leading-tight font-extrabold">
               Trabajos disponibles
             </h1>
-            <p className="mt-1.5 text-[13px] text-white/50">
+            <p className="mt-1.5 text-apoyo text-white/50">
               {sinHabilitar
                 ? "Todavía no estás habilitado en ningún oficio."
                 : `Pedidos abiertos de ${habilitados.map((h) => h.oficio).join(", ")}.`}
             </p>
           </div>
-          <span className="flex shrink-0 flex-col items-end gap-1 text-[12px] font-semibold">
+          <span className="flex shrink-0 flex-col items-end gap-1 text-apoyo font-semibold">
             <Link
               href="/mis-trabajos"
               className="text-white/70 underline underline-offset-2"
@@ -86,20 +86,20 @@ export default async function Trabajos() {
 
       <div className="flex flex-col gap-3 px-5 pt-5">
         {error && (
-          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
             No se pudieron leer los pedidos: {error.message}
           </p>
         )}
 
         {sinHabilitar ? (
           <div className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center">
-            <p className="text-[13.5px] leading-relaxed text-tinta-3">
+            <p className="text-cuerpo leading-relaxed text-tinta-3">
               Para ver trabajos primero tenés que activar un oficio y tener los
               papeles vigentes.
             </p>
             <Link
               href="/profesional"
-              className="mt-4 inline-block rounded-xl bg-acento px-5 py-3 text-[14.5px] font-bold text-acento-tinta"
+              className="mt-4 inline-block rounded-xl bg-acento px-5 py-3 text-cuerpo font-bold text-acento-tinta"
             >
               Activar mi oficio
             </Link>
@@ -117,16 +117,16 @@ export default async function Trabajos() {
             >
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 {p.urgencia === "urgente" && (
-                  <span className="rounded-md bg-alerta-suave px-2 py-1 text-[10.5px] font-bold tracking-wide text-alerta">
+                  <span className="rounded-md bg-alerta-suave px-2 py-1 text-etiqueta font-bold tracking-wide text-alerta">
                     URGENTE
                   </span>
                 )}
-                <span className="text-[11px] text-tinta-3">
+                <span className="text-etiqueta text-tinta-3">
                   {p.publicado_el ? fecha(p.publicado_el) : ""}
                 </span>
               </div>
 
-              <p className="text-[13.5px] leading-relaxed text-tinta">
+              <p className="text-cuerpo leading-relaxed text-tinta">
                 {p.descripcion}
               </p>
 
@@ -136,13 +136,13 @@ export default async function Trabajos() {
                 {p.franja_horaria && <Etiqueta>{p.franja_horaria}</Etiqueta>}
               </div>
 
-              <p className="mt-2.5 text-[11.5px] font-semibold text-acento-tinta">
+              <p className="mt-2.5 text-etiqueta font-semibold text-acento-tinta">
                 Tocá para ver el detalle y presupuestar →
               </p>
             </Link>
           ))
         ) : (
-          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-cuerpo leading-relaxed text-tinta-3">
             No hay pedidos abiertos de tus oficios en este momento.
           </p>
         )}
@@ -153,7 +153,7 @@ export default async function Trabajos() {
 
 function Etiqueta({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-md border border-linea-2 bg-fondo px-2 py-1 text-[10.5px] font-semibold text-tinta-2">
+    <span className="rounded-md border border-linea-2 bg-fondo px-2 py-1 text-etiqueta font-semibold text-tinta-2">
       {children}
     </span>
   );

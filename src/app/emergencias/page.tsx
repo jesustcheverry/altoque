@@ -41,14 +41,14 @@ export default function Emergencias() {
       <header className="bg-alerta px-5 pt-6 pb-6 text-white">
         <Link
           href="/"
-          className="text-[12.5px] font-semibold text-white/70 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/70 underline underline-offset-2"
         >
           ← Volver
         </Link>
-        <h1 className="font-display mt-3 text-[23px] leading-tight font-extrabold">
+        <h1 className="font-display mt-3 text-titulo leading-tight font-extrabold">
           Emergencias
         </h1>
-        <p className="mt-1.5 text-[13px] leading-snug text-white/80">
+        <p className="mt-1.5 text-apoyo leading-snug text-white/80">
           Si es grave, no publiques un pedido. Llamá.
         </p>
       </header>
@@ -66,7 +66,7 @@ export default function Emergencias() {
       </section>
 
       <section className="px-5 pt-6">
-        <h2 className="font-display mb-2.5 text-[15.5px] font-bold text-tinta">
+        <h2 className="font-display mb-2.5 text-destacado font-bold text-tinta">
           Servicios
         </h2>
         <div className="flex flex-col gap-2">
@@ -86,7 +86,7 @@ export default function Emergencias() {
       </section>
 
       <section className="px-5 pt-6">
-        <h2 className="font-display mb-2.5 text-[15.5px] font-bold text-tinta">
+        <h2 className="font-display mb-2.5 text-destacado font-bold text-tinta">
           Otras líneas
         </h2>
         <div className="flex flex-col gap-2">
@@ -108,23 +108,23 @@ export default function Emergencias() {
       {/* Y recién al final, cuando ya dijimos lo importante. */}
       <section className="px-5 pt-7">
         <div className="rounded-2xl border border-linea bg-fondo p-4">
-          <b className="font-display block text-[14.5px] font-bold text-tinta">
+          <b className="font-display block text-cuerpo font-bold text-tinta">
             ¿Y si no es una emergencia?
           </b>
-          <p className="mt-1.5 text-[12.5px] leading-relaxed text-tinta-2">
+          <p className="mt-1.5 text-apoyo leading-relaxed text-tinta-2">
             Un caño que pierde, una canilla que gotea, el tablero que salta, una
             puerta trabada. Para eso sí servimos: publicás el problema y te
             responden profesionales con los papeles al día.
           </p>
           <Link
             href="/pedidos/nuevo"
-            className="mt-3 block rounded-xl bg-marca py-3 text-center text-[14px] font-bold text-white"
+            className="mt-3 block rounded-xl bg-marca py-3 text-center text-cuerpo font-bold text-white"
           >
             Publicar un pedido
           </Link>
         </div>
 
-        <p className="mt-4 text-center text-[11px] leading-snug text-tinta-3">
+        <p className="mt-4 text-center text-etiqueta leading-snug text-tinta-3">
           Números verificados en septiembre de 2026 contra las fuentes
           oficiales. Si encontrás uno desactualizado, avisanos.
         </p>
@@ -147,13 +147,13 @@ function Grande({
       href={`tel:${numero}`}
       className="flex items-center gap-4 rounded-2xl border border-alerta/30 bg-alerta-suave p-4 transition hover:border-alerta"
     >
-      <span className="font-display w-[68px] shrink-0 text-[30px] leading-none font-extrabold text-alerta tabular-nums">
+      <span className="font-display w-[68px] shrink-0 text-numero leading-none font-extrabold text-alerta tabular-nums">
         {numero}
       </span>
       <span className="min-w-0">
-        <b className="block text-[14.5px] font-bold text-tinta">{titulo}</b>
+        <b className="block text-cuerpo font-bold text-tinta">{titulo}</b>
         {nota && (
-          <span className="mt-0.5 block text-[11.5px] leading-snug text-tinta-2">
+          <span className="mt-0.5 block text-etiqueta leading-snug text-tinta-2">
             {nota}
           </span>
         )}
@@ -178,13 +178,13 @@ function Chico({
       href={`tel:${marcar}`}
       className="block rounded-2xl border border-linea bg-white p-3.5 transition hover:border-marca-2"
     >
-      <b className="block text-[13.5px] font-bold text-tinta">{titulo}</b>
+      <b className="block text-cuerpo font-bold text-tinta">{titulo}</b>
       {nota && (
-        <span className="mt-0.5 block text-[11.5px] leading-snug text-tinta-2">
+        <span className="mt-0.5 block text-etiqueta leading-snug text-tinta-2">
           {nota}
         </span>
       )}
-      <span className="font-display mt-1.5 block text-[16px] font-extrabold text-marca tabular-nums">
+      <span className="font-display mt-1.5 block text-destacado font-extrabold text-marca tabular-nums">
         {numero}
       </span>
     </a>

@@ -22,6 +22,7 @@
 import Link from "next/link";
 import { clienteServidor } from "@/lib/supabase-servidor";
 import BotonSalir from "@/components/BotonSalir";
+import { colorDeAvatar, inicialesDe } from "@/lib/avatar";
 
 // ---------- Íconos ----------
 
@@ -237,21 +238,21 @@ function Encabezado({
       <div className="mb-4 flex items-center justify-between gap-3">
         {nombre ? (
           <>
-            <p className="text-[13px] text-white/60">
+            <p className="text-apoyo text-white/60">
               Hola, <b className="font-semibold text-white">{nombre}</b>
             </p>
             <span className="flex items-center gap-3">
               {esAdmin && (
                 <Link
                   href="/admin/verificaciones"
-                  className="text-[12px] font-semibold text-acento underline underline-offset-2"
+                  className="text-apoyo font-semibold text-acento underline underline-offset-2"
                 >
                   Verificaciones
                 </Link>
               )}
               <Link
                 href="/pedidos"
-                className="text-[12px] font-semibold text-white/80 underline underline-offset-2"
+                className="text-apoyo font-semibold text-white/80 underline underline-offset-2"
               >
                 Mis pedidos
               </Link>
@@ -260,8 +261,8 @@ function Encabezado({
           </>
         ) : (
           <>
-            <p className="text-[13px] text-white/60">No entraste todavía</p>
-            <span className="flex items-center gap-3 text-[12.5px] font-semibold">
+            <p className="text-apoyo text-white/60">No entraste todavía</p>
+            <span className="flex items-center gap-3 text-apoyo font-semibold">
               <Link href="/entrar" className="text-white/80 underline underline-offset-2">
                 Entrar
               </Link>
@@ -276,7 +277,7 @@ function Encabezado({
         )}
       </div>
 
-      <h1 className="font-display mt-1 text-[23px] leading-tight font-extrabold">
+      <h1 className="font-display mt-1 text-titulo leading-tight font-extrabold">
         ¿Qué hay que arreglar
         <br />
         en casa?
@@ -294,7 +295,7 @@ function Encabezado({
 
       {/* La dirección ya no está escrita a mano: es la que el
           usuario cargó. Si todavía no cargó ninguna, lo invitamos. */}
-      <p className="mt-3 flex items-center gap-1.5 text-[12.5px] text-white/60">
+      <p className="mt-3 flex items-center gap-1.5 text-apoyo text-white/60">
         <Pin />
         {inmueble ? (
           <>
@@ -336,16 +337,16 @@ function Oficios({
   return (
     <section className="px-5 pt-5">
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="font-display text-[15.5px] font-bold text-tinta">
+        <h2 className="font-display text-destacado font-bold text-tinta">
           Oficios
         </h2>
-        <span className="text-[11px] text-tinta-3">desde la base de datos</span>
+        <span className="text-etiqueta text-tinta-3">desde la base de datos</span>
       </div>
 
       {/* Si la base no contesta, lo decimos en criollo en vez de
           dejar la pantalla vacía sin explicación. */}
       {error && (
-        <p className="rounded-xl border border-alerta/30 bg-alerta-suave p-3 text-[13px] text-tinta-2">
+        <p className="rounded-xl border border-alerta/30 bg-alerta-suave p-3 text-apoyo text-tinta-2">
           No se pudo leer la base de datos: {error}
         </p>
       )}
@@ -384,7 +385,7 @@ function Oficios({
               <span className="text-marca">
                 <Icono />
               </span>
-              <span className="text-center text-[10.5px] leading-tight font-semibold text-tinta-2">
+              <span className="text-center text-etiqueta leading-tight font-semibold text-tinta-2">
                 {o.nombre_visible}
               </span>
             </Link>
@@ -420,7 +421,7 @@ function BannerUrgencias() {
           <Alerta />
         </span>
         <span>
-          <b className="block text-[13.5px] font-bold text-tinta">
+          <b className="block text-cuerpo font-bold text-tinta">
             ¿Es una urgencia?
           </b>
           <span className="mt-0.5 block text-xs leading-snug text-tinta-2">
@@ -443,21 +444,21 @@ function BannerUrgencias() {
         href="tel:08009991050"
         className="rounded-2xl border border-linea bg-fondo px-3.5 py-3"
       >
-        <b className="block text-[12.5px] font-bold text-tinta">
+        <b className="block text-apoyo font-bold text-tinta">
           ¿Olés a gas? No publiques un pedido.
         </b>
-        <span className="mt-0.5 block text-[11.5px] leading-snug text-tinta-2">
+        <span className="mt-0.5 block text-etiqueta leading-snug text-tinta-2">
           Abrí las ventanas, no toques ninguna llave de luz y llamá a tu
           distribuidora. Van gratis y sin turno.
         </span>
-        <span className="mt-1.5 block text-[12.5px] font-bold text-marca underline underline-offset-2">
+        <span className="mt-1.5 block text-apoyo font-bold text-marca underline underline-offset-2">
           Metrogas · 0800-999-1050 · las 24 horas
         </span>
       </a>
 
       <Link
         href="/emergencias"
-        className="py-0.5 text-center text-[12px] font-semibold text-tinta-3 underline underline-offset-2"
+        className="py-0.5 text-center text-apoyo font-semibold text-tinta-3 underline underline-offset-2"
       >
         Todos los números de emergencia
       </Link>
@@ -477,8 +478,6 @@ type Profesional = {
   seguro_vigente: boolean | null;
 };
 
-const COLORES = ["#0e3a34", "#175048", "#7a4e06", "#b4381c", "#1a574d"];
-
 function CercaTuyo({
   profesionales,
   nombresDeOficio,
@@ -493,11 +492,11 @@ function CercaTuyo({
   return (
     <section className="px-5 pt-6">
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="font-display text-[15.5px] font-bold text-tinta">
+        <h2 className="font-display text-destacado font-bold text-tinta">
           Profesionales en la app
         </h2>
         {hay && (
-          <span className="text-[11px] text-tinta-3">papeles al día</span>
+          <span className="text-etiqueta text-tinta-3">papeles al día</span>
         )}
       </div>
 
@@ -506,7 +505,7 @@ function CercaTuyo({
           lo mismo que no haya profesionales a que la base no haya
           contestado. */}
       {error && (
-        <p className="mb-2.5 rounded-xl border border-alerta/30 bg-alerta-suave p-3 text-[13px] text-tinta-2">
+        <p className="mb-2.5 rounded-xl border border-alerta/30 bg-alerta-suave p-3 text-apoyo text-tinta-2">
           No se pudo leer la lista de profesionales: {error}
         </p>
       )}
@@ -526,7 +525,7 @@ function CercaTuyo({
            inventados: si alguien entra y no hay nadie, que lo
            sepa, pero que igual pueda publicar su pedido. */
         <div className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center">
-          <p className="text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="text-cuerpo leading-relaxed text-tinta-3">
             Todavía no hay profesionales activos.
             <br />
             Publicá tu pedido igual: les llega apenas se sumen.
@@ -538,14 +537,8 @@ function CercaTuyo({
 }
 
 function FichaProfesional({ p, oficio }: { p: Profesional; oficio: string }) {
-  const iniciales = p.nombre
-    .split(" ")
-    .slice(0, 2)
-    .map((parte) => parte[0])
-    .join("")
-    .toUpperCase();
-
-  const color = COLORES[p.nombre.length % COLORES.length];
+  const iniciales = inicialesDe(p.nombre);
+  const color = colorDeAvatar(p.nombre);
   const zona = (p.zonas ?? []).slice(0, 2).join(" · ");
   const trabajos = p.trabajos_terminados ?? 0;
 
@@ -562,13 +555,13 @@ function FichaProfesional({ p, oficio }: { p: Profesional; oficio: string }) {
       </span>
 
       <span className="min-w-0 flex-1">
-        <b className="block text-[14.5px] font-bold text-tinta">{p.nombre}</b>
-        <span className="mt-0.5 block text-[12.5px] text-tinta-2">
+        <b className="block text-cuerpo font-bold text-tinta">{p.nombre}</b>
+        <span className="mt-0.5 block text-apoyo text-tinta-2">
           {oficio}
           {zona && ` · ${zona}`}
         </span>
 
-        <span className="mt-1.5 flex items-center gap-2 text-[12.5px]">
+        <span className="mt-1.5 flex items-center gap-2 text-apoyo">
           {/* Sin reseñas decimos "sin reseñas". No inventamos un 5,0. */}
           {p.puntaje ? (
             <span className="flex items-center gap-1 font-semibold text-tinta tabular-nums">
@@ -607,7 +600,7 @@ function FichaProfesional({ p, oficio }: { p: Profesional; oficio: string }) {
         )}
       </span>
 
-      <span className="shrink-0 self-center text-[15px] text-tinta-3">→</span>
+      <span className="shrink-0 self-center text-destacado text-tinta-3">→</span>
     </Link>
   );
 }
@@ -627,7 +620,7 @@ function Etiqueta({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10.5px] font-semibold ${tonos[tono]}`}
+      className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-etiqueta font-semibold ${tonos[tono]}`}
     >
       {children}
     </span>

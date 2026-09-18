@@ -87,10 +87,10 @@ export default function SubirDocumentos({
 
   return (
     <div className="mt-2.5 rounded-xl border border-linea-2 bg-fondo p-3">
-      <b className="block text-[11.5px] font-semibold text-tinta-2">
+      <b className="block text-etiqueta font-semibold text-tinta-2">
         Tus papeles
       </b>
-      <p className="mt-0.5 text-[11px] leading-snug text-tinta-3">
+      <p className="mt-0.5 text-etiqueta leading-snug text-tinta-3">
         Foto o PDF. Los ve solo el revisor, nunca los clientes.
       </p>
 
@@ -108,10 +108,10 @@ export default function SubirDocumentos({
               } ${subiendo === tipo ? "opacity-60" : ""}`}
             >
               <span className="min-w-0">
-                <b className="block text-[12.5px] font-semibold text-tinta">
+                <b className="block text-apoyo font-semibold text-tinta">
                   {NOMBRES[tipo]}
                 </b>
-                <span className="block text-[11px] text-tinta-3">
+                <span className="block text-etiqueta text-tinta-3">
                   {subiendo === tipo
                     ? "Subiendo…"
                     : subido
@@ -121,7 +121,7 @@ export default function SubirDocumentos({
               </span>
 
               <span
-                className={`shrink-0 rounded-md px-2.5 py-1.5 text-[11.5px] font-bold ${
+                className={`shrink-0 rounded-md px-2.5 py-1.5 text-etiqueta font-bold ${
                   subido
                     ? "bg-fondo text-tinta-2"
                     : "bg-acento text-acento-tinta"
@@ -143,7 +143,7 @@ export default function SubirDocumentos({
       </div>
 
       {error && (
-        <p className="mt-2 rounded-lg border border-alerta/30 bg-white px-3 py-2 text-[11.5px] leading-snug text-tinta-2">
+        <p className="mt-2 rounded-lg border border-alerta/30 bg-white px-3 py-2 text-etiqueta leading-snug text-tinta-2">
           {error}
         </p>
       )}

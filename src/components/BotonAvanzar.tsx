@@ -62,12 +62,12 @@ export default function BotonAvanzar({
       <button
         onClick={avanzar}
         disabled={enviando}
-        className={`w-full rounded-xl py-3 text-[14px] font-bold disabled:opacity-60 ${estilos[tono]}`}
+        className={`w-full rounded-xl py-3 text-cuerpo font-bold disabled:opacity-60 ${estilos[tono]}`}
       >
         {enviando ? "Un momento…" : texto}
       </button>
       {error && (
-        <p className="mt-2 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2 text-[12px] text-tinta-2">
+        <p className="mt-2 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2 text-apoyo text-tinta-2">
           {error}
         </p>
       )}

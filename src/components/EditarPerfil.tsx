@@ -112,7 +112,7 @@ export default function EditarPerfil({
     return (
       <button
         onClick={() => setAbierto(true)}
-        className="mt-2.5 w-full rounded-xl border border-linea bg-white py-2.5 text-[13px] font-semibold text-tinta-2 transition hover:border-marca-2"
+        className="mt-2.5 w-full rounded-xl border border-linea bg-white py-2.5 text-apoyo font-semibold text-tinta-2 transition hover:border-marca-2"
       >
         Editar este oficio
       </button>
@@ -170,7 +170,7 @@ export default function EditarPerfil({
       />
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Sobre vos
         </span>
         <textarea
@@ -178,7 +178,7 @@ export default function EditarPerfil({
           onChange={(e) => setBio(e.target.value)}
           rows={3}
           placeholder="Veinte años instalando y reparando calefacción."
-          className="resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-[13.5px] leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+          className="resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
         />
       </label>
 
@@ -188,13 +188,13 @@ export default function EditarPerfil({
           type="checkbox"
           checked={activo}
           onChange={(e) => setActivo(e.target.checked)}
-          className="mt-0.5 size-4 shrink-0 accent-[#0e3a34]"
+          className="mt-0.5 size-4 shrink-0 accent-marca"
         />
         <span>
-          <b className="block text-[13px] font-semibold text-tinta">
+          <b className="block text-apoyo font-semibold text-tinta">
             Recibir pedidos
           </b>
-          <span className="mt-0.5 block text-[11.5px] leading-snug text-tinta-2">
+          <span className="mt-0.5 block text-etiqueta leading-snug text-tinta-2">
             Si lo destildás desaparecés de las búsquedas y dejan de llegarte
             pedidos. No se borra nada: tus trabajos y tus reseñas quedan.
           </span>
@@ -203,7 +203,7 @@ export default function EditarPerfil({
 
       {/* El aviso honesto, antes de apretar guardar. */}
       {perderaVerificacion && (
-        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[12px] leading-snug text-tinta-2">
+        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo leading-snug text-tinta-2">
           <b className="font-semibold">Ojo:</b> estás cambiando un papel, así
           que tu verificación se cae y volvés a la cola de revisión. Hasta que
           alguien mire los datos nuevos vas a dejar de recibir pedidos.
@@ -211,7 +211,7 @@ export default function EditarPerfil({
       )}
 
       {error && (
-        <p className="rounded-xl border border-alerta/30 bg-white px-3.5 py-3 text-[12.5px] text-tinta-2">
+        <p className="rounded-xl border border-alerta/30 bg-white px-3.5 py-3 text-apoyo text-tinta-2">
           {error}
         </p>
       )}
@@ -220,14 +220,14 @@ export default function EditarPerfil({
         <button
           type="submit"
           disabled={guardando}
-          className="flex-1 rounded-xl bg-marca py-3 text-[14px] font-bold text-white disabled:opacity-60"
+          className="flex-1 rounded-xl bg-marca py-3 text-cuerpo font-bold text-white disabled:opacity-60"
         >
           {guardando ? "Guardando…" : "Guardar cambios"}
         </button>
         <button
           type="button"
           onClick={() => setAbierto(false)}
-          className="rounded-xl border border-linea bg-white px-4 py-3 text-[14px] font-semibold text-tinta-2"
+          className="rounded-xl border border-linea bg-white px-4 py-3 text-cuerpo font-semibold text-tinta-2"
         >
           Cancelar
         </button>
@@ -251,15 +251,15 @@ function Campo({
 }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[12.5px] font-semibold text-tinta">{etiqueta}</span>
+      <span className="text-apoyo font-semibold text-tinta">{etiqueta}</span>
       <input
         type={tipo}
         value={valor}
         onChange={(e) => alCambiar(e.target.value)}
-        className="rounded-xl border border-linea bg-white px-3.5 py-3 text-[14px] text-tinta outline-none focus:border-marca-2"
+        className="rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo text-tinta outline-none focus:border-marca-2"
       />
       {ayuda && (
-        <span className="text-[11px] leading-snug text-tinta-3">{ayuda}</span>
+        <span className="text-etiqueta leading-snug text-tinta-3">{ayuda}</span>
       )}
     </label>
   );

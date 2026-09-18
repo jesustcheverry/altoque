@@ -84,17 +84,17 @@ export default async function MisTrabajos() {
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <header className="bg-[#16211f] px-5 pt-6 pb-6 text-white">
+      <header className="bg-marca-oscura px-5 pt-6 pb-6 text-white">
         <Link
           href="/trabajos"
-          className="text-[12.5px] font-semibold text-white/50 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/50 underline underline-offset-2"
         >
           ← Trabajos disponibles
         </Link>
-        <h1 className="font-display mt-3 text-[23px] leading-tight font-extrabold">
+        <h1 className="font-display mt-3 text-titulo leading-tight font-extrabold">
           Mis trabajos
         </h1>
-        <p className="mt-1.5 text-[13px] text-white/50">
+        <p className="mt-1.5 text-apoyo text-white/50">
           Los que ya te adjudicaron.
         </p>
       </header>
@@ -117,39 +117,39 @@ export default async function MisTrabajos() {
               >
                 <div className="mb-2 flex items-center justify-between gap-2">
                   <span
-                    className={`rounded-md px-2 py-1 text-[10.5px] font-bold tracking-wide ${paso.clase}`}
+                    className={`rounded-md px-2 py-1 text-etiqueta font-bold tracking-wide ${paso.clase}`}
                   >
                     {paso.texto}
                   </span>
-                  <b className="font-mono text-[14px] font-semibold text-tinta tabular-nums">
+                  <b className="font-mono text-cuerpo font-semibold text-tinta tabular-nums">
                     {pres ? aPesos(pres.total_centavos) : "—"}
                   </b>
                 </div>
 
-                <p className="text-[13.5px] leading-relaxed text-tinta">
+                <p className="text-cuerpo leading-relaxed text-tinta">
                   {ped?.descripcion}
                 </p>
 
                 {/* Acá está lo que antes no se veía. */}
                 {inm && (
                   <div className="mt-3 rounded-xl bg-fondo p-3">
-                    <b className="block text-[13px] font-semibold text-tinta">
+                    <b className="block text-apoyo font-semibold text-tinta">
                       {inm.calle} {inm.altura}
                       {inm.piso && `, piso ${inm.piso}`}
                       {inm.depto && ` ${inm.depto}`}
                     </b>
                     {inm.barrio && (
-                      <span className="block text-[12px] text-tinta-2">
+                      <span className="block text-apoyo text-tinta-2">
                         {inm.barrio}
                       </span>
                     )}
                     {inm.instrucciones && (
-                      <span className="mt-1 block text-[11.5px] leading-snug text-tinta-3">
+                      <span className="mt-1 block text-etiqueta leading-snug text-tinta-3">
                         {inm.instrucciones}
                       </span>
                     )}
                     {contacto && (
-                      <div className="mt-2 border-t border-linea pt-2 text-[12.5px]">
+                      <div className="mt-2 border-t border-linea pt-2 text-apoyo">
                         <span className="text-tinta-2">{contacto.nombre}</span>
                         {contacto.telefono ? (
                           <a
@@ -169,7 +169,7 @@ export default async function MisTrabajos() {
                 )}
 
                 {t.agendado_para && (
-                  <p className="mt-2.5 text-[11.5px] text-tinta-3">
+                  <p className="mt-2.5 text-etiqueta text-tinta-3">
                     Acordado para el{" "}
                     {new Date(t.agendado_para).toLocaleString("es-AR", {
                       weekday: "long",
@@ -192,14 +192,14 @@ export default async function MisTrabajos() {
                 )}
 
                 {t.estado === "terminado" && (
-                  <p className="mt-3 rounded-xl bg-marca-suave px-3 py-2.5 text-[11.5px] leading-snug text-tinta-2">
+                  <p className="mt-3 rounded-xl bg-marca-suave px-3 py-2.5 text-etiqueta leading-snug text-tinta-2">
                     Avisamos al cliente. Cuando confirme se libera tu pago, y si
                     no dice nada se libera solo a las 72 horas.
                   </p>
                 )}
 
                 {(t.estado === "confirmado" || t.estado === "pagado") && (
-                  <p className="mt-3 rounded-xl bg-ok-suave px-3 py-2.5 text-[11.5px] leading-snug text-tinta-2">
+                  <p className="mt-3 rounded-xl bg-ok-suave px-3 py-2.5 text-etiqueta leading-snug text-tinta-2">
                     Trabajo confirmado por el cliente. El pago quedó liberado.
                   </p>
                 )}
@@ -207,7 +207,7 @@ export default async function MisTrabajos() {
             );
           })
         ) : (
-          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-cuerpo leading-relaxed text-tinta-3">
             Todavía no te adjudicaron ningún trabajo.
             <br />
             Mandá presupuestos desde “Trabajos disponibles”.

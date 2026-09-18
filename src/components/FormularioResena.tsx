@@ -71,10 +71,10 @@ export default function FormularioResena({
       onSubmit={enviar}
       className="rounded-2xl border border-acento bg-acento-suave p-4"
     >
-      <b className="font-display block text-[14.5px] font-bold text-tinta">
+      <b className="font-display block text-cuerpo font-bold text-tinta">
         ¿Cómo estuvo el trabajo?
       </b>
-      <p className="mt-1 text-[12px] leading-snug text-tinta-2">
+      <p className="mt-1 text-apoyo leading-snug text-tinta-2">
         Tu reseña es lo que va a leer el próximo vecino antes de elegirlo.
       </p>
 
@@ -85,7 +85,7 @@ export default function FormularioResena({
             type="button"
             onClick={() => setEstrellas(n)}
             aria-label={`${n} estrellas`}
-            className={`text-[30px] leading-none transition ${
+            className={`text-numero leading-none transition ${
               n <= estrellas ? "text-acento" : "text-linea"
             }`}
           >
@@ -93,7 +93,7 @@ export default function FormularioResena({
           </button>
         ))}
         {estrellas > 0 && (
-          <span className="ml-2 text-[12.5px] font-semibold text-tinta-2">
+          <span className="ml-2 text-apoyo font-semibold text-tinta-2">
             {AYUDAS[estrellas]}
           </span>
         )}
@@ -104,11 +104,11 @@ export default function FormularioResena({
         onChange={(e) => setTexto(e.target.value)}
         rows={3}
         placeholder="Vino puntual, cambió la termocupla en media hora y me dejó el certificado. (Opcional)"
-        className="mt-3 w-full resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-[13.5px] leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+        className="mt-3 w-full resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
       />
 
       {error && (
-        <p className="mt-2 rounded-xl border border-alerta/30 bg-white px-3 py-2 text-[12px] text-tinta-2">
+        <p className="mt-2 rounded-xl border border-alerta/30 bg-white px-3 py-2 text-apoyo text-tinta-2">
           {error}
         </p>
       )}
@@ -116,7 +116,7 @@ export default function FormularioResena({
       <button
         type="submit"
         disabled={enviando}
-        className="mt-3 w-full rounded-xl bg-marca py-3 text-[14px] font-bold text-white disabled:opacity-60"
+        className="mt-3 w-full rounded-xl bg-marca py-3 text-cuerpo font-bold text-white disabled:opacity-60"
       >
         {enviando ? "Enviando…" : "Publicar reseña"}
       </button>

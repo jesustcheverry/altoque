@@ -42,7 +42,7 @@ export default function AltaDeOficio({
         <FormularioProfesional personaId={personaId} oficios={oficios} />
         <button
           onClick={() => setAbierto(false)}
-          className="py-1 text-[12.5px] font-semibold text-tinta-3 underline underline-offset-2"
+          className="py-1 text-apoyo font-semibold text-tinta-3 underline underline-offset-2"
         >
           Cancelar
         </button>
@@ -54,7 +54,7 @@ export default function AltaDeOficio({
     return (
       <button
         onClick={() => setAbierto(true)}
-        className="rounded-2xl border border-dashed border-linea px-4 py-4 text-[13.5px] font-semibold text-tinta-2 transition hover:border-marca-2"
+        className="rounded-2xl border border-dashed border-linea px-4 py-4 text-cuerpo font-semibold text-tinta-2 transition hover:border-marca-2"
       >
         + Agregar otro oficio
       </button>
@@ -62,22 +62,22 @@ export default function AltaDeOficio({
   }
 
   return (
-    <div className="rounded-2xl bg-[#16211f] p-5 text-white">
-      <b className="font-display block text-[17px] leading-tight font-extrabold">
+    <div className="rounded-2xl bg-marca-oscura p-5 text-white">
+      <b className="font-display block text-destacado leading-tight font-extrabold">
         ¿Trabajás de algún oficio?
       </b>
-      <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+      <p className="mt-2 text-apoyo leading-relaxed text-white/60">
         Activá tu perfil y empezá a recibir pedidos de tu zona. Te pedimos
         matrícula y seguro vigentes según el oficio: es lo que hace que el
         vecino te deje entrar a su casa.
       </p>
-      <p className="mt-2 text-[12.5px] leading-relaxed text-white/40">
+      <p className="mt-2 text-apoyo leading-relaxed text-white/40">
         No cobramos nada hasta que cobres un trabajo.
       </p>
 
       <button
         onClick={() => setAbierto(true)}
-        className="mt-4 w-full rounded-xl bg-acento py-3.5 text-[15px] font-bold text-acento-tinta"
+        className="mt-4 w-full rounded-xl bg-acento py-3.5 text-destacado font-bold text-acento-tinta"
       >
         Activar mi oficio
       </button>

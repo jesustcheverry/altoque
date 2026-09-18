@@ -165,11 +165,11 @@ export default async function MiOficio() {
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <header className="bg-[#16211f] px-5 pt-6 pb-6 text-white">
-        <h1 className="font-display text-[23px] leading-tight font-extrabold">
+      <header className="bg-marca-oscura px-5 pt-6 pb-6 text-white">
+        <h1 className="font-display text-titulo leading-tight font-extrabold">
           Mi oficio
         </h1>
-        <p className="mt-1.5 text-[13px] text-white/50">
+        <p className="mt-1.5 text-apoyo text-white/50">
           {tieneAlguno
             ? "Tu perfil profesional y los papeles que lo respaldan."
             : "Del otro lado del mostrador."}
@@ -179,13 +179,13 @@ export default async function MiOficio() {
           <div className="mt-4 flex gap-2">
             <Link
               href="/trabajos"
-              className="flex-1 rounded-xl bg-acento py-2.5 text-center text-[13.5px] font-bold text-acento-tinta"
+              className="flex-1 rounded-xl bg-acento py-2.5 text-center text-cuerpo font-bold text-acento-tinta"
             >
               Trabajos disponibles
             </Link>
             <Link
               href="/mis-trabajos"
-              className="flex-1 rounded-xl border border-white/20 py-2.5 text-center text-[13.5px] font-bold text-white"
+              className="flex-1 rounded-xl border border-white/20 py-2.5 text-center text-cuerpo font-bold text-white"
             >
               Mis trabajos
             </Link>
@@ -207,11 +207,11 @@ export default async function MiOficio() {
               className="rounded-2xl border border-linea bg-white p-4"
             >
               <div className="flex items-center justify-between gap-2">
-                <b className="font-display text-[16px] font-bold text-tinta">
+                <b className="font-display text-destacado font-bold text-tinta">
                   {oc?.nombre_visible ?? p.oficio}
                 </b>
                 <span
-                  className={`rounded-md px-2 py-1 text-[10.5px] font-bold tracking-wide ${
+                  className={`rounded-md px-2 py-1 text-etiqueta font-bold tracking-wide ${
                     habilitado
                       ? "bg-ok-suave text-ok"
                       : "bg-alerta-suave text-alerta"
@@ -223,12 +223,12 @@ export default async function MiOficio() {
 
               {/* La línea que contesta la pregunta. */}
               <p
-                className={`mt-2.5 rounded-xl border px-3.5 py-3 text-[13px] leading-snug ${TONOS[paso.tono]}`}
+                className={`mt-2.5 rounded-xl border px-3.5 py-3 text-apoyo leading-snug ${TONOS[paso.tono]}`}
               >
                 {paso.texto}
               </p>
 
-              <p className="mt-2.5 text-[12px] text-tinta-3">
+              <p className="mt-2.5 text-apoyo text-tinta-3">
                 {p.zonas && p.zonas.length > 0
                   ? p.zonas.join(" · ")
                   : "Sin zonas cargadas"}
@@ -239,7 +239,7 @@ export default async function MiOficio() {
                   volvés nunca, así que no puede ocupar pantalla
                   para siempre. */}
               <details className="group mt-3">
-                <summary className="cursor-pointer list-none rounded-xl border border-linea bg-fondo px-3.5 py-2.5 text-[12.5px] font-semibold text-tinta-2 transition hover:border-marca-2">
+                <summary className="cursor-pointer list-none rounded-xl border border-linea bg-fondo px-3.5 py-2.5 text-apoyo font-semibold text-tinta-2 transition hover:border-marca-2">
                   Papeles y datos
                   <span className="float-right text-tinta-3 group-open:hidden">
                     ▾
@@ -250,7 +250,7 @@ export default async function MiOficio() {
                 </summary>
 
                 <div className="mt-2.5">
-                  <div className="flex flex-col gap-0.5 rounded-xl bg-fondo p-3 text-[12px] text-tinta-2">
+                  <div className="flex flex-col gap-0.5 rounded-xl bg-fondo p-3 text-apoyo text-tinta-2">
                     <Dato
                       etiqueta="Matrícula"
                       valor={

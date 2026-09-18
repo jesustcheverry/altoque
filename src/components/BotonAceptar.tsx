@@ -52,12 +52,12 @@ export default function BotonAceptar({
       <button
         onClick={aceptar}
         disabled={enviando}
-        className="w-full rounded-xl bg-acento py-3 text-[14px] font-bold text-acento-tinta disabled:opacity-60"
+        className="w-full rounded-xl bg-acento py-3 text-cuerpo font-bold text-acento-tinta disabled:opacity-60"
       >
         {enviando ? "Aceptando…" : "Aceptar y agendar"}
       </button>
       {error && (
-        <p className="mt-2 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2 text-[12px] text-tinta-2">
+        <p className="mt-2 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2 text-apoyo text-tinta-2">
           {error}
         </p>
       )}

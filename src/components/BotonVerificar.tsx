@@ -58,10 +58,10 @@ export default function BotonVerificar({ perfilId }: { perfilId: string }) {
   if (rechazando) {
     return (
       <div className="mt-3 rounded-xl border border-alerta/30 bg-alerta-suave p-3">
-        <b className="block text-[12.5px] font-semibold text-tinta">
+        <b className="block text-apoyo font-semibold text-tinta">
           ¿Qué le falta?
         </b>
-        <p className="mt-0.5 text-[11.5px] leading-snug text-tinta-2">
+        <p className="mt-0.5 text-etiqueta leading-snug text-tinta-2">
           Esto lo va a leer el profesional. Sé concreto.
         </p>
 
@@ -70,18 +70,18 @@ export default function BotonVerificar({ perfilId }: { perfilId: string }) {
           onChange={(e) => setMotivo(e.target.value)}
           rows={2}
           placeholder="La matrícula que cargaste no figura en el registro."
-          className="mt-2 w-full resize-none rounded-lg border border-linea bg-white px-3 py-2 text-[13px] leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+          className="mt-2 w-full resize-none rounded-lg border border-linea bg-white px-3 py-2 text-apoyo leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
         />
 
         {error && (
-          <p className="mt-1.5 text-[11.5px] text-alerta">{error}</p>
+          <p className="mt-1.5 text-etiqueta text-alerta">{error}</p>
         )}
 
         <div className="mt-2 flex gap-2">
           <button
             onClick={() => decidir("rechazado")}
             disabled={enviando}
-            className="flex-1 rounded-lg bg-alerta py-2.5 text-[13px] font-bold text-white disabled:opacity-60"
+            className="flex-1 rounded-lg bg-alerta py-2.5 text-apoyo font-bold text-white disabled:opacity-60"
           >
             {enviando ? "Enviando…" : "Confirmar rechazo"}
           </button>
@@ -90,7 +90,7 @@ export default function BotonVerificar({ perfilId }: { perfilId: string }) {
               setRechazando(false);
               setError(null);
             }}
-            className="rounded-lg border border-linea bg-white px-3 py-2.5 text-[13px] font-semibold text-tinta-2"
+            className="rounded-lg border border-linea bg-white px-3 py-2.5 text-apoyo font-semibold text-tinta-2"
           >
             Volver
           </button>
@@ -102,7 +102,7 @@ export default function BotonVerificar({ perfilId }: { perfilId: string }) {
   return (
     <div className="mt-3">
       {error && (
-        <p className="mb-2 rounded-lg border border-alerta/30 bg-alerta-suave px-3 py-2 text-[12px] text-tinta-2">
+        <p className="mb-2 rounded-lg border border-alerta/30 bg-alerta-suave px-3 py-2 text-apoyo text-tinta-2">
           {error}
         </p>
       )}
@@ -110,14 +110,14 @@ export default function BotonVerificar({ perfilId }: { perfilId: string }) {
         <button
           onClick={() => decidir("verificado")}
           disabled={enviando}
-          className="flex-1 rounded-lg bg-ok py-2.5 text-[13.5px] font-bold text-white disabled:opacity-60"
+          className="flex-1 rounded-lg bg-ok py-2.5 text-cuerpo font-bold text-white disabled:opacity-60"
         >
           {enviando ? "Guardando…" : "Verificar"}
         </button>
         <button
           onClick={() => setRechazando(true)}
           disabled={enviando}
-          className="rounded-lg border border-linea bg-white px-4 py-2.5 text-[13.5px] font-semibold text-tinta-2"
+          className="rounded-lg border border-linea bg-white px-4 py-2.5 text-cuerpo font-semibold text-tinta-2"
         >
           Rechazar
         </button>

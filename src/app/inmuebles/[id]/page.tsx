@@ -101,14 +101,14 @@ export default async function InmuebleDetalle({
       <header className="bg-marca px-5 pt-6 pb-6 text-white">
         <Link
           href="/inmuebles"
-          className="text-[12.5px] font-semibold text-white/60 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/60 underline underline-offset-2"
         >
           ← Mis inmuebles
         </Link>
-        <h1 className="font-display mt-3 text-[23px] leading-tight font-extrabold">
+        <h1 className="font-display mt-3 text-titulo leading-tight font-extrabold">
           {inmueble.alias}
         </h1>
-        <p className="mt-1 text-[13px] text-white/60">
+        <p className="mt-1 text-apoyo text-white/60">
           {inmueble.calle} {inmueble.altura}
           {inmueble.piso && `, piso ${inmueble.piso}`}
           {inmueble.depto && ` ${inmueble.depto}`}
@@ -128,7 +128,7 @@ export default async function InmuebleDetalle({
 
       {inmueble.instrucciones && (
         <div className="border-b border-linea px-5 py-3">
-          <p className="text-[12px] leading-snug text-tinta-3">
+          <p className="text-apoyo leading-snug text-tinta-3">
             <b className="font-semibold text-tinta-2">Cómo entrar: </b>
             {inmueble.instrucciones}
           </p>
@@ -136,7 +136,7 @@ export default async function InmuebleDetalle({
       )}
 
       <div className="px-5 pt-5">
-        <h2 className="font-display mb-3 text-[15.5px] font-bold text-tinta">
+        <h2 className="font-display mb-3 text-destacado font-bold text-tinta">
           Historial
         </h2>
 
@@ -157,15 +157,15 @@ export default async function InmuebleDetalle({
                   className="block rounded-2xl border border-linea bg-white p-3.5 transition hover:border-marca-2"
                 >
                   <div className="mb-1.5 flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-semibold tracking-wide text-tinta-3 uppercase">
+                    <span className="text-etiqueta font-semibold tracking-wide text-tinta-3 uppercase">
                       {p.oficio}
                     </span>
-                    <span className="text-[11px] text-tinta-3">
+                    <span className="text-etiqueta text-tinta-3">
                       {fechaCorta(p.creado_el)}
                     </span>
                   </div>
 
-                  <p className="text-[13.5px] leading-relaxed text-tinta">
+                  <p className="text-cuerpo leading-relaxed text-tinta">
                     {p.descripcion.slice(0, 110)}
                     {p.descripcion.length > 110 && "…"}
                   </p>
@@ -173,10 +173,10 @@ export default async function InmuebleDetalle({
                   {t ? (
                     <div className="mt-2.5 border-t border-linea-2 pt-2.5">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[12.5px] text-tinta-2">
+                        <span className="text-apoyo text-tinta-2">
                           {prof ? prof.nombre : "Profesional"}
                         </span>
-                        <b className="font-mono text-[13px] font-semibold text-tinta tabular-nums">
+                        <b className="font-mono text-apoyo font-semibold text-tinta tabular-nums">
                           {pres ? aPesos(pres.total_centavos) : "—"}
                         </b>
                       </div>
@@ -184,7 +184,7 @@ export default async function InmuebleDetalle({
                       <div className="mt-2 flex flex-wrap items-center gap-1.5">
                         {est && (
                           <span
-                            className={`rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wide ${est.clase}`}
+                            className={`rounded-md px-2 py-0.5 text-etiqueta font-bold tracking-wide ${est.clase}`}
                           >
                             {est.texto}
                           </span>
@@ -192,7 +192,7 @@ export default async function InmuebleDetalle({
                         {(pres?.incluye ?? []).map((i: string) => (
                           <span
                             key={i}
-                            className="rounded-md border border-linea-2 bg-fondo px-2 py-0.5 text-[10px] font-semibold text-tinta-2"
+                            className="rounded-md border border-linea-2 bg-fondo px-2 py-0.5 text-etiqueta font-semibold text-tinta-2"
                           >
                             {i}
                           </span>
@@ -200,7 +200,7 @@ export default async function InmuebleDetalle({
                       </div>
                     </div>
                   ) : (
-                    <p className="mt-2.5 border-t border-linea-2 pt-2.5 text-[11.5px] text-tinta-3">
+                    <p className="mt-2.5 border-t border-linea-2 pt-2.5 text-etiqueta text-tinta-3">
                       {p.estado === "publicado"
                         ? "Esperando presupuestos."
                         : "No se llegó a contratar a nadie."}
@@ -211,7 +211,7 @@ export default async function InmuebleDetalle({
             })}
           </div>
         ) : (
-          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-cuerpo leading-relaxed text-tinta-3">
             Todavía no pasó nada en esta propiedad.
             <br />
             Cuando pidas tu primer arreglo, va a quedar acá.
@@ -220,7 +220,7 @@ export default async function InmuebleDetalle({
 
         <Link
           href={`/pedidos/nuevo`}
-          className="mt-4 block rounded-xl bg-acento py-3.5 text-center text-[15px] font-bold text-acento-tinta"
+          className="mt-4 block rounded-xl bg-acento py-3.5 text-center text-destacado font-bold text-acento-tinta"
         >
           Pedir un arreglo
         </Link>
@@ -261,10 +261,10 @@ function presupuestoDe(
 function Dato({ valor, texto }: { valor: string; texto: string }) {
   return (
     <div className="bg-marca px-2 py-2.5 text-center">
-      <b className="font-display block text-[14px] font-bold text-white tabular-nums">
+      <b className="font-display block text-cuerpo font-bold text-white tabular-nums">
         {valor}
       </b>
-      <span className="mt-0.5 block text-[9.5px] tracking-wide text-white/50">
+      <span className="mt-0.5 block text-etiqueta tracking-wide text-white/50">
         {texto}
       </span>
     </div>

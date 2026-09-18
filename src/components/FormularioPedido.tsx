@@ -120,13 +120,13 @@ export default function FormularioPedido({
   return (
     <form onSubmit={publicar} className="flex flex-col gap-5 px-5 pt-5 pb-10">
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           ¿Qué oficio necesitás?
         </span>
         <select
           value={oficio}
           onChange={(e) => setOficio(e.target.value)}
-          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] text-tinta outline-none focus:border-marca-2"
+          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo text-tinta outline-none focus:border-marca-2"
         >
           {oficios.map((o) => (
             <option key={o.oficio} value={o.oficio}>
@@ -137,7 +137,7 @@ export default function FormularioPedido({
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           ¿Qué pasa?
           <span className="block font-normal text-tinta-3">
             El modelo del artefacto, desde cuándo pasa, qué probaste.
@@ -148,15 +148,15 @@ export default function FormularioPedido({
           onChange={(e) => setDescripcion(e.target.value)}
           rows={5}
           placeholder="El calefactor del living prende, hace la llama unos segundos y se apaga solo. Es un Eskabe de 5000 kcal, tendrá 12 años. Pasa desde el jueves."
-          className="resize-none rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+          className="resize-none rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
         />
-        <span className="text-right text-[11px] text-tinta-3 tabular-nums">
+        <span className="text-right text-etiqueta text-tinta-3 tabular-nums">
           {descripcion.trim().length} caracteres
         </span>
       </label>
 
       <div className="flex flex-col gap-2">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           ¿Para cuándo?
         </span>
         {URGENCIAS.map((u) => (
@@ -180,10 +180,10 @@ export default function FormularioPedido({
               )}
             </span>
             <span>
-              <b className="block text-[13.5px] font-semibold text-tinta">
+              <b className="block text-cuerpo font-semibold text-tinta">
                 {u.titulo}
               </b>
-              <span className="block text-[11.5px] text-tinta-3">
+              <span className="block text-etiqueta text-tinta-3">
                 {u.detalle}
               </span>
             </span>
@@ -195,7 +195,7 @@ export default function FormularioPedido({
           estimado, así que directamente no la mostramos. */}
       {urgencia !== "solo_presupuesto" && (
         <div className="flex flex-col gap-2">
-          <span className="text-[12.5px] font-semibold text-tinta">
+          <span className="text-apoyo font-semibold text-tinta">
             ¿Cuándo te viene bien?
           </span>
           <div className="flex flex-wrap gap-2">
@@ -204,7 +204,7 @@ export default function FormularioPedido({
                 key={f}
                 type="button"
                 onClick={() => setFranja(f)}
-                className={`rounded-full border px-3 py-1.5 text-[12.5px] font-semibold transition ${
+                className={`rounded-full border px-3 py-1.5 text-apoyo font-semibold transition ${
                   franja === f
                     ? "border-acento bg-acento text-acento-tinta"
                     : "border-linea bg-white text-tinta-2"
@@ -218,11 +218,11 @@ export default function FormularioPedido({
       )}
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">¿Dónde?</span>
+        <span className="text-apoyo font-semibold text-tinta">¿Dónde?</span>
         <select
           value={inmuebleId}
           onChange={(e) => setInmuebleId(e.target.value)}
-          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] text-tinta outline-none focus:border-marca-2"
+          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo text-tinta outline-none focus:border-marca-2"
         >
           {inmuebles.map((i) => (
             <option key={i.id} value={i.id}>
@@ -233,7 +233,7 @@ export default function FormularioPedido({
       </label>
 
       {error && (
-        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
           {error}
         </p>
       )}
@@ -242,11 +242,11 @@ export default function FormularioPedido({
         <button
           type="submit"
           disabled={enviando}
-          className="w-full rounded-xl bg-acento py-3.5 text-[15px] font-bold text-acento-tinta disabled:opacity-60"
+          className="w-full rounded-xl bg-acento py-3.5 text-destacado font-bold text-acento-tinta disabled:opacity-60"
         >
           {enviando ? "Publicando…" : "Publicar pedido"}
         </button>
-        <p className="mt-2.5 text-center text-[11.5px] leading-snug text-tinta-3">
+        <p className="mt-2.5 text-center text-etiqueta leading-snug text-tinta-3">
           En la pantalla siguiente vas a poder agregarle fotos.
           <br />
           Si en 48 horas nadie responde, el pedido se cierra y te avisamos.

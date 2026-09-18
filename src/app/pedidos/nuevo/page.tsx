@@ -46,14 +46,14 @@ export default async function NuevoPedido({
       <header className="bg-marca px-5 pt-6 pb-6 text-white">
         <Link
           href="/"
-          className="text-[12.5px] font-semibold text-white/60 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/60 underline underline-offset-2"
         >
           ← Volver
         </Link>
-        <h1 className="font-display mt-3 text-[23px] leading-tight font-extrabold">
+        <h1 className="font-display mt-3 text-titulo leading-tight font-extrabold">
           Contanos qué pasa
         </h1>
-        <p className="mt-1.5 text-[13px] text-white/60">
+        <p className="mt-1.5 text-apoyo text-white/60">
           Lo publicamos y te responden varios. Sin cargo.
         </p>
       </header>
@@ -63,12 +63,12 @@ export default async function NuevoPedido({
           cargó ninguna, lo mandamos a cargarla primero. */}
       {!inmuebles || inmuebles.length === 0 ? (
         <div className="px-5 pt-6">
-          <p className="rounded-2xl border border-dashed border-linea px-4 py-6 text-center text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="rounded-2xl border border-dashed border-linea px-4 py-6 text-center text-cuerpo leading-relaxed text-tinta-3">
             Antes de publicar un pedido necesitamos saber dónde es.
           </p>
           <Link
             href="/inmuebles"
-            className="mt-4 block rounded-xl bg-acento py-3.5 text-center text-[15px] font-bold text-acento-tinta"
+            className="mt-4 block rounded-xl bg-acento py-3.5 text-center text-destacado font-bold text-acento-tinta"
           >
             Cargar mi dirección
           </Link>

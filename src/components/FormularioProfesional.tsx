@@ -89,18 +89,18 @@ export default function FormularioProfesional({
       onSubmit={guardar}
       className="flex flex-col gap-3.5 rounded-2xl border border-linea bg-fondo p-4"
     >
-      <h2 className="font-display text-[15px] font-bold text-tinta">
+      <h2 className="font-display text-destacado font-bold text-tinta">
         Activar un oficio
       </h2>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           ¿De qué trabajás?
         </span>
         <select
           value={oficio}
           onChange={(e) => setOficio(e.target.value)}
-          className="rounded-xl border border-linea bg-white px-3.5 py-3 text-[14px] text-tinta outline-none focus:border-marca-2"
+          className="rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo text-tinta outline-none focus:border-marca-2"
         >
           {oficios.map((o) => (
             <option key={o.oficio} value={o.oficio}>
@@ -113,7 +113,7 @@ export default function FormularioProfesional({
       {/* Lo que se pide cambia según el oficio. Esto no está
           escrito a mano: viene de la base. */}
       {elegido && (elegido.exige_matricula || elegido.exige_seguro) && (
-        <p className="rounded-xl border border-acento/30 bg-acento-suave px-3.5 py-2.5 text-[12px] leading-snug text-acento-tinta">
+        <p className="rounded-xl border border-acento/30 bg-acento-suave px-3.5 py-2.5 text-apoyo leading-snug text-acento-tinta">
           Para {elegido.nombre_visible.toLowerCase()} pedimos{" "}
           {elegido.exige_matricula && elegido.exige_seguro
             ? "matrícula y seguro vigentes"
@@ -177,7 +177,7 @@ export default function FormularioProfesional({
       />
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Contá qué hacés
           <span className="block font-normal text-tinta-3">
             Lo que te diferencia del resto. Lo lee el vecino antes de elegir.
@@ -188,12 +188,12 @@ export default function FormularioProfesional({
           onChange={(e) => setBio(e.target.value)}
           rows={3}
           placeholder="Trabajo en PH y consorcios desde 2016. Hago la prueba de hermeticidad y entrego el certificado firmado."
-          className="resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-[14px] leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+          className="resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
         />
       </label>
 
       {error && (
-        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
           {error}
         </p>
       )}
@@ -201,7 +201,7 @@ export default function FormularioProfesional({
       <button
         type="submit"
         disabled={guardando}
-        className="mt-1 rounded-xl bg-acento py-3 text-[14.5px] font-bold text-acento-tinta disabled:opacity-60"
+        className="mt-1 rounded-xl bg-acento py-3 text-cuerpo font-bold text-acento-tinta disabled:opacity-60"
       >
         {guardando ? "Guardando…" : "Activar oficio"}
       </button>
@@ -224,13 +224,13 @@ function Campo({
 }) {
   return (
     <label className="flex w-full flex-col gap-1.5">
-      <span className="text-[12.5px] font-semibold text-tinta">{etiqueta}</span>
+      <span className="text-apoyo font-semibold text-tinta">{etiqueta}</span>
       <input
         type={tipo}
         value={valor}
         onChange={(e) => alCambiar(e.target.value)}
         placeholder={ejemplo}
-        className="w-full rounded-xl border border-linea bg-white px-3.5 py-3 text-[14px] text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+        className="w-full rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
       />
     </label>
   );

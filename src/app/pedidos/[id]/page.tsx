@@ -133,22 +133,22 @@ export default async function PedidoDetalle({
       <header className="bg-marca px-5 pt-6 pb-6 text-white">
         <Link
           href="/pedidos"
-          className="text-[12.5px] font-semibold text-white/60 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/60 underline underline-offset-2"
         >
           ← Mis pedidos
         </Link>
         <div className="mt-3 flex items-center gap-2">
           <span
-            className={`rounded-md px-2 py-1 text-[10.5px] font-bold tracking-wide ${estado.clase}`}
+            className={`rounded-md px-2 py-1 text-etiqueta font-bold tracking-wide ${estado.clase}`}
           >
             {estado.texto}
           </span>
         </div>
-        <h1 className="font-display mt-2 text-[19px] leading-snug font-extrabold">
+        <h1 className="font-display mt-2 text-titulo leading-snug font-extrabold">
           {pedido.descripcion.slice(0, 70)}
           {pedido.descripcion.length > 70 && "…"}
         </h1>
-        <p className="mt-1.5 text-[12.5px] text-white/60">
+        <p className="mt-1.5 text-apoyo text-white/60">
           {pedido.oficio}
           {inm && ` · ${inm.calle} ${inm.altura}`}
           {pedido.franja_horaria && ` · ${pedido.franja_horaria}`}
@@ -158,11 +158,11 @@ export default async function PedidoDetalle({
       <div className="flex flex-col gap-3 px-5 pt-5">
         {aceptado && (
           <div className="rounded-2xl border border-ok/30 bg-ok-suave p-4">
-            <b className="font-display block text-[14.5px] font-bold text-tinta">
+            <b className="font-display block text-cuerpo font-bold text-tinta">
               Elegiste a{" "}
               {mapaProf.get(aceptado.profesional_id)?.nombre ?? "un profesional"}
             </b>
-            <p className="mt-1 text-[13px] text-tinta-2">
+            <p className="mt-1 text-apoyo text-tinta-2">
               Por {aPesos(aceptado.total_centavos)}. El trabajo ya está creado y
               el pago quedó retenido hasta que confirmes que terminó.
             </p>
@@ -171,7 +171,7 @@ export default async function PedidoDetalle({
 
         {trabajo && (
           <div className="rounded-2xl border border-linea bg-white p-4">
-            <b className="font-display block text-[14px] font-bold text-tinta">
+            <b className="font-display block text-cuerpo font-bold text-tinta">
               Estado del trabajo
             </b>
 
@@ -198,7 +198,7 @@ export default async function PedidoDetalle({
 
             {trabajo.estado === "terminado" && (
               <div className="mt-4 flex flex-col gap-2">
-                <p className="text-[12px] leading-snug text-tinta-2">
+                <p className="text-apoyo leading-snug text-tinta-2">
                   El profesional marcó que terminó. Si está todo bien,
                   confirmalo y se le libera el pago. Si hay un problema, abrí
                   una disputa y el pago queda frenado.
@@ -214,14 +214,14 @@ export default async function PedidoDetalle({
                   texto="Tengo un problema"
                   tono="suave"
                 />
-                <p className="text-center text-[11px] text-tinta-3">
+                <p className="text-center text-etiqueta text-tinta-3">
                   Si no hacés nada, se confirma solo a las 72 horas.
                 </p>
               </div>
             )}
 
             {trabajo.estado === "en_disputa" && (
-              <p className="mt-3 rounded-xl bg-alerta-suave px-3 py-2.5 text-[12px] leading-snug text-tinta-2">
+              <p className="mt-3 rounded-xl bg-alerta-suave px-3 py-2.5 text-apoyo leading-snug text-tinta-2">
                 Abriste una disputa. El pago quedó frenado hasta que se
                 resuelva.
               </p>
@@ -233,17 +233,17 @@ export default async function PedidoDetalle({
           (trabajo.estado === "confirmado" || trabajo.estado === "pagado") &&
           (resena ? (
             <div className="rounded-2xl border border-linea bg-white p-4">
-              <b className="font-display block text-[14px] font-bold text-tinta">
+              <b className="font-display block text-cuerpo font-bold text-tinta">
                 Tu reseña
               </b>
-              <div className="mt-1 text-[16px] text-acento">
+              <div className="mt-1 text-destacado text-acento">
                 {"\u2605".repeat(resena.estrellas)}
                 <span className="text-linea">
                   {"\u2605".repeat(5 - resena.estrellas)}
                 </span>
               </div>
               {resena.texto && (
-                <p className="mt-1.5 text-[13px] leading-relaxed text-tinta-2">
+                <p className="mt-1.5 text-apoyo leading-relaxed text-tinta-2">
                   {resena.texto}
                 </p>
               )}
@@ -255,10 +255,10 @@ export default async function PedidoDetalle({
         {/* Las fotos. Van arriba porque son lo que más mejora la
             calidad de los presupuestos que vas a recibir. */}
         <div className="rounded-2xl border border-linea bg-white p-4">
-          <b className="font-display block text-[14px] font-bold text-tinta">
+          <b className="font-display block text-cuerpo font-bold text-tinta">
             Fotos del problema
           </b>
-          <p className="mt-1 mb-3 text-[12px] leading-snug text-tinta-3">
+          <p className="mt-1 mb-3 text-apoyo leading-snug text-tinta-3">
             Una foto de la chapa con el modelo, y otra de cómo está instalado.
             Con eso el profesional te da un precio firme en vez de un “a ver
             qué es”.
@@ -284,7 +284,7 @@ export default async function PedidoDetalle({
         </div>
 
         {pedido.estado === "publicado" && (
-          <p className="text-[12.5px] text-tinta-3">
+          <p className="text-apoyo text-tinta-3">
             {vigentes.length === 0
               ? "Todavía no llegó ningún presupuesto."
               : `Llegaron ${vigentes.length} ${vigentes.length === 1 ? "presupuesto" : "presupuestos"}. Podés elegir uno o esperar más.`}
@@ -304,26 +304,26 @@ export default async function PedidoDetalle({
               <div className="min-w-0">
                 <Link
                   href={`/profesionales/${p.profesional_id}`}
-                  className="block text-[14.5px] font-bold text-tinta underline decoration-linea underline-offset-2"
+                  className="block text-cuerpo font-bold text-tinta underline decoration-linea underline-offset-2"
                 >
                   {mapaProf.get(p.profesional_id)?.nombre ?? "Profesional"}
                 </Link>
-                <span className="mt-0.5 block text-[11px] text-tinta-3">
+                <span className="mt-0.5 block text-etiqueta text-tinta-3">
                   {mapaProf.get(p.profesional_id)?.puntaje
                     ? `★ ${Number(mapaProf.get(p.profesional_id)!.puntaje).toFixed(1)} · ${mapaProf.get(p.profesional_id)!.cantidad_resenas} reseñas`
                     : "Todavía sin reseñas"}
                 </span>
                 {p.id === masBarato && vigentes.length > 1 && (
-                  <span className="mt-0.5 block text-[11px] font-semibold text-acento-tinta">
+                  <span className="mt-0.5 block text-etiqueta font-semibold text-acento-tinta">
                     El más barato
                   </span>
                 )}
               </div>
               <div className="shrink-0 text-right">
-                <div className="font-mono text-[18px] font-semibold text-tinta tabular-nums">
+                <div className="font-mono text-titulo font-semibold text-tinta tabular-nums">
                   {aPesos(p.total_centavos)}
                 </div>
-                <div className="text-[10px] text-tinta-3">
+                <div className="text-etiqueta text-tinta-3">
                   {p.repuestos_centavos > 0
                     ? `${aPesos(p.mano_obra_centavos)} + repuestos`
                     : "mano de obra"}
@@ -332,7 +332,7 @@ export default async function PedidoDetalle({
             </div>
 
             {p.mensaje && (
-              <p className="mt-2.5 text-[13px] leading-relaxed text-tinta-2">
+              <p className="mt-2.5 text-apoyo leading-relaxed text-tinta-2">
                 {p.mensaje}
               </p>
             )}
@@ -342,7 +342,7 @@ export default async function PedidoDetalle({
                 {p.incluye.map((i: string) => (
                   <span
                     key={i}
-                    className="rounded-md border border-linea-2 bg-white px-2 py-1 text-[10.5px] font-semibold text-tinta-2"
+                    className="rounded-md border border-linea-2 bg-white px-2 py-1 text-etiqueta font-semibold text-tinta-2"
                   >
                     {i}
                   </span>
@@ -351,7 +351,7 @@ export default async function PedidoDetalle({
             )}
 
             {p.disponible_el && (
-              <p className="mt-2.5 text-[11.5px] text-tinta-3">
+              <p className="mt-2.5 text-etiqueta text-tinta-3">
                 Puede ir el {fecha(p.disponible_el)}
               </p>
             )}
@@ -416,7 +416,7 @@ function Paso({
         )}
       </span>
       <span
-        className={`text-[13px] ${hecho ? "font-medium text-tinta" : "text-tinta-3"}`}
+        className={`text-apoyo ${hecho ? "font-medium text-tinta" : "text-tinta-3"}`}
       >
         {texto}
       </span>

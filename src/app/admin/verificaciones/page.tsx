@@ -71,17 +71,17 @@ export default async function Verificaciones() {
 
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white pb-12">
-      <header className="bg-[#16211f] px-5 pt-6 pb-6 text-white">
+      <header className="bg-marca-oscura px-5 pt-6 pb-6 text-white">
         <Link
           href="/"
-          className="text-[12.5px] font-semibold text-white/50 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/50 underline underline-offset-2"
         >
           ← Volver
         </Link>
-        <h1 className="font-display mt-3 text-[23px] leading-tight font-extrabold">
+        <h1 className="font-display mt-3 text-titulo leading-tight font-extrabold">
           Verificaciones
         </h1>
-        <p className="mt-1.5 text-[13px] text-white/50">
+        <p className="mt-1.5 text-apoyo text-white/50">
           {esAdmin
             ? "Profesionales esperando que alguien mire sus papeles."
             : "Esta sección es para revisores."}
@@ -90,19 +90,19 @@ export default async function Verificaciones() {
 
       <div className="flex flex-col gap-3 px-5 pt-5">
         {!esAdmin && (
-          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-cuerpo leading-relaxed text-tinta-3">
             Tu cuenta no es revisora, así que no hay nada para ver acá.
           </p>
         )}
 
         {error && (
-          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
             No se pudo leer la cola: {error.message}
           </p>
         )}
 
         {esAdmin && cola && cola.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-[13.5px] leading-relaxed text-tinta-3">
+          <p className="rounded-2xl border border-dashed border-linea px-4 py-8 text-center text-cuerpo leading-relaxed text-tinta-3">
             No hay nadie esperando. Todo al día.
           </p>
         )}
@@ -119,21 +119,21 @@ export default async function Verificaciones() {
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <b className="block text-[15px] font-bold text-tinta">
+                    <b className="block text-destacado font-bold text-tinta">
                       {p.nombre}
                     </b>
-                    <span className="mt-0.5 block truncate text-[12px] text-tinta-3">
+                    <span className="mt-0.5 block truncate text-apoyo text-tinta-3">
                       {p.email}
                     </span>
                   </div>
-                  <span className="shrink-0 rounded-md bg-marca-suave px-2 py-1 text-[10.5px] font-bold tracking-wide text-marca">
+                  <span className="shrink-0 rounded-md bg-marca-suave px-2 py-1 text-etiqueta font-bold tracking-wide text-marca">
                     {p.verificacion === "en_revision"
                       ? "EN REVISIÓN"
                       : "PENDIENTE"}
                   </span>
                 </div>
 
-                <p className="mt-2 text-[13px] font-semibold text-tinta-2">
+                <p className="mt-2 text-apoyo font-semibold text-tinta-2">
                   {oc?.nombre_visible ?? p.oficio}
                   {p.zonas && p.zonas.length > 0 && (
                     <span className="font-normal text-tinta-3">
@@ -143,7 +143,7 @@ export default async function Verificaciones() {
                   )}
                 </p>
 
-                <div className="mt-2.5 flex flex-col gap-1 rounded-xl bg-fondo p-3 text-[12.5px] text-tinta-2">
+                <div className="mt-2.5 flex flex-col gap-1 rounded-xl bg-fondo p-3 text-apoyo text-tinta-2">
                   <Dato
                     etiqueta="Matrícula"
                     valor={
@@ -167,7 +167,7 @@ export default async function Verificaciones() {
 
                   if (suyos.length === 0) {
                     return (
-                      <p className="mt-2.5 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2.5 text-[11.5px] leading-snug text-tinta-2">
+                      <p className="mt-2.5 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2.5 text-etiqueta leading-snug text-tinta-2">
                         No mandó ningún papel todavía. Lo único que hay es lo
                         que escribió. Verificar esto sería firmar sin leer.
                       </p>
@@ -187,21 +187,21 @@ export default async function Verificaciones() {
                             className="flex items-center justify-between gap-2 rounded-xl border border-marca-2 bg-marca-suave px-3 py-2.5"
                           >
                             <span>
-                              <b className="block text-[12.5px] font-semibold text-tinta">
+                              <b className="block text-apoyo font-semibold text-tinta">
                                 {d.tipo === "matricula"
                                   ? "Matrícula"
                                   : d.tipo === "seguro"
                                     ? "Certificado de seguro"
                                     : d.tipo}
                               </b>
-                              <span className="block text-[11px] text-tinta-3">
+                              <span className="block text-etiqueta text-tinta-3">
                                 Enviado el{" "}
                                 {new Date(d.subido_el).toLocaleDateString(
                                   "es-AR",
                                 )}
                               </span>
                             </span>
-                            <span className="shrink-0 text-[11.5px] font-bold text-marca underline underline-offset-2">
+                            <span className="shrink-0 text-etiqueta font-bold text-marca underline underline-offset-2">
                               Abrir →
                             </span>
                           </a>

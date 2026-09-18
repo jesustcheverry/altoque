@@ -46,7 +46,7 @@ export default function Pestanias({ hayUsuario }: { hayUsuario: boolean }) {
   if (!enCasa && !enOficio) return null;
 
   return (
-    <nav className="mx-auto flex max-w-md bg-[#0b1413]">
+    <nav className="mx-auto flex max-w-md bg-marca-noche">
       <Solapa href="/" activa={enCasa}>
         Mi casa
       </Solapa>
@@ -69,7 +69,7 @@ function Solapa({
   return (
     <Link
       href={href}
-      className={`flex-1 border-b-[2.5px] py-3 text-center text-[13px] font-bold transition ${
+      className={`flex-1 border-b-[2.5px] py-3 text-center text-apoyo font-bold transition ${
         activa
           ? "border-acento text-white"
           : "border-transparent text-white/40 hover:text-white/70"

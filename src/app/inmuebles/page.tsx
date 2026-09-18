@@ -44,21 +44,21 @@ export default async function Inmuebles() {
       <header className="bg-marca px-5 pt-6 pb-6 text-white">
         <Link
           href="/"
-          className="text-[12.5px] font-semibold text-white/60 underline underline-offset-2"
+          className="text-apoyo font-semibold text-white/60 underline underline-offset-2"
         >
           ← Volver
         </Link>
-        <h1 className="font-display mt-3 text-[23px] leading-tight font-extrabold">
+        <h1 className="font-display mt-3 text-titulo leading-tight font-extrabold">
           Mis inmuebles
         </h1>
-        <p className="mt-1.5 text-[13px] text-white/60">
+        <p className="mt-1.5 text-apoyo text-white/60">
           Cada propiedad guarda su propio historial de arreglos.
         </p>
       </header>
 
       <div className="flex flex-col gap-4 px-5 pt-5">
         {error && (
-          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
             No se pudieron leer los inmuebles: {error.message}
           </p>
         )}
@@ -72,25 +72,25 @@ export default async function Inmuebles() {
                 className="block rounded-2xl border border-linea bg-white p-3.5 transition hover:border-marca-2"
               >
                 <div className="flex items-baseline justify-between gap-2">
-                  <b className="text-[14.5px] font-bold text-tinta">{i.alias}</b>
-                  <span className="text-[11px] text-tinta-3">
+                  <b className="text-cuerpo font-bold text-tinta">{i.alias}</b>
+                  <span className="text-etiqueta text-tinta-3">
                     {TIPOS[i.tipo ?? "otro"] ?? "Otro"}
                   </span>
                 </div>
-                <p className="mt-1 text-[13px] text-tinta-2">
+                <p className="mt-1 text-apoyo text-tinta-2">
                   {i.calle} {i.altura}
                   {i.piso && `, piso ${i.piso}`}
                   {i.depto && ` ${i.depto}`}
                   {i.barrio && ` · ${i.barrio}`}
                 </p>
-                <p className="mt-2 border-t border-linea-2 pt-2 text-[11.5px] font-semibold text-marca">
+                <p className="mt-2 border-t border-linea-2 pt-2 text-etiqueta font-semibold text-marca">
                   Ver el historial de esta propiedad →
                 </p>
               </Link>
             ))}
           </div>
         ) : (
-          <p className="rounded-2xl border border-dashed border-linea px-4 py-6 text-center text-[13.5px] text-tinta-3">
+          <p className="rounded-2xl border border-dashed border-linea px-4 py-6 text-center text-cuerpo text-tinta-3">
             Todavía no cargaste ninguna propiedad.
             <br />
             Agregá la primera acá abajo.

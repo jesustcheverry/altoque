@@ -76,7 +76,7 @@ export default function SubirFotos({
   return (
     <div>
       <label
-        className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-linea bg-fondo px-4 py-4 text-[13.5px] font-semibold text-tinta-2 ${
+        className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-linea bg-fondo px-4 py-4 text-cuerpo font-semibold text-tinta-2 ${
           subiendo ? "opacity-60" : "hover:border-marca-2"
         }`}
       >
@@ -105,7 +105,7 @@ export default function SubirFotos({
       </label>
 
       {error && (
-        <p className="mt-2 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2 text-[12px] text-tinta-2">
+        <p className="mt-2 rounded-xl border border-alerta/30 bg-alerta-suave px-3 py-2 text-apoyo text-tinta-2">
           {error}
         </p>
       )}

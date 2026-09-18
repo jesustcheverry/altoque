@@ -45,29 +45,29 @@ export default function Entrar() {
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white">
       <header className="bg-marca px-5 pt-8 pb-7 text-white">
-        <h1 className="font-display text-[24px] leading-tight font-extrabold">
+        <h1 className="font-display text-titulo leading-tight font-extrabold">
           Entrá a tu cuenta
         </h1>
-        <p className="mt-1.5 text-[13.5px] text-white/60">
+        <p className="mt-1.5 text-cuerpo text-white/60">
           Bienvenido de vuelta.
         </p>
       </header>
 
       <form onSubmit={entrar} className="flex flex-col gap-4 px-5 pt-6">
         <label className="flex flex-col gap-1.5">
-          <span className="text-[12.5px] font-semibold text-tinta">Mail</span>
+          <span className="text-apoyo font-semibold text-tinta">Mail</span>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="vos@mail.com"
             required
-            className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+            className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
           />
         </label>
 
         <label className="flex flex-col gap-1.5">
-          <span className="text-[12.5px] font-semibold text-tinta">
+          <span className="text-apoyo font-semibold text-tinta">
             Contraseña
           </span>
           <input
@@ -75,12 +75,12 @@ export default function Entrar() {
             value={clave}
             onChange={(e) => setClave(e.target.value)}
             required
-            className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+            className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
           />
         </label>
 
         {error && (
-          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
             {error}
           </p>
         )}
@@ -88,12 +88,12 @@ export default function Entrar() {
         <button
           type="submit"
           disabled={enviando}
-          className="mt-1 rounded-xl bg-acento py-3.5 text-[15px] font-bold text-acento-tinta disabled:opacity-60"
+          className="mt-1 rounded-xl bg-acento py-3.5 text-destacado font-bold text-acento-tinta disabled:opacity-60"
         >
           {enviando ? "Entrando…" : "Entrar"}
         </button>
 
-        <p className="pb-10 text-center text-[13px] text-tinta-3">
+        <p className="pb-10 text-center text-apoyo text-tinta-3">
           ¿Todavía no tenés cuenta?{" "}
           <Link href="/registro" className="font-semibold text-marca">
             Creala acá

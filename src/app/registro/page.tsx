@@ -67,10 +67,10 @@ export default function Registro() {
   return (
     <main className="mx-auto min-h-screen max-w-md bg-white">
       <header className="bg-marca px-5 pt-8 pb-7 text-white">
-        <h1 className="font-display text-[24px] leading-tight font-extrabold">
+        <h1 className="font-display text-titulo leading-tight font-extrabold">
           Creá tu cuenta
         </h1>
-        <p className="mt-1.5 text-[13.5px] text-white/60">
+        <p className="mt-1.5 text-cuerpo text-white/60">
           Para pedir presupuestos y seguir tus trabajos.
         </p>
       </header>
@@ -99,12 +99,12 @@ export default function Registro() {
         />
 
         {error && (
-          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+          <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
             {error}
           </p>
         )}
         {aviso && (
-          <p className="rounded-xl border border-marca/20 bg-marca-suave px-3.5 py-3 text-[13px] text-tinta-2">
+          <p className="rounded-xl border border-marca/20 bg-marca-suave px-3.5 py-3 text-apoyo text-tinta-2">
             {aviso}
           </p>
         )}
@@ -112,12 +112,12 @@ export default function Registro() {
         <button
           type="submit"
           disabled={enviando}
-          className="mt-1 rounded-xl bg-acento py-3.5 text-[15px] font-bold text-acento-tinta disabled:opacity-60"
+          className="mt-1 rounded-xl bg-acento py-3.5 text-destacado font-bold text-acento-tinta disabled:opacity-60"
         >
           {enviando ? "Creando…" : "Crear cuenta"}
         </button>
 
-        <p className="pb-10 text-center text-[13px] text-tinta-3">
+        <p className="pb-10 text-center text-apoyo text-tinta-3">
           ¿Ya tenés cuenta?{" "}
           <Link href="/entrar" className="font-semibold text-marca">
             Entrá
@@ -144,14 +144,14 @@ function Campo({
 }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[12.5px] font-semibold text-tinta">{etiqueta}</span>
+      <span className="text-apoyo font-semibold text-tinta">{etiqueta}</span>
       <input
         type={tipo}
         value={valor}
         onChange={(e) => alCambiar(e.target.value)}
         placeholder={ejemplo}
         required
-        className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+        className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
       />
     </label>
   );

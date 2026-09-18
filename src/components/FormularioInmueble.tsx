@@ -89,7 +89,7 @@ export default function FormularioInmueble({
       onSubmit={guardar}
       className="flex flex-col gap-3.5 rounded-2xl border border-linea bg-fondo p-4"
     >
-      <h2 className="font-display text-[15px] font-bold text-tinta">
+      <h2 className="font-display text-destacado font-bold text-tinta">
         Agregar un inmueble
       </h2>
 
@@ -140,13 +140,13 @@ export default function FormularioInmueble({
       </div>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Tipo de propiedad
         </span>
         <select
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
-          className="rounded-xl border border-linea bg-white px-3.5 py-3 text-[14px] text-tinta outline-none focus:border-marca-2"
+          className="rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo text-tinta outline-none focus:border-marca-2"
         >
           {TIPOS.map((t) => (
             <option key={t.valor} value={t.valor}>
@@ -157,7 +157,7 @@ export default function FormularioInmueble({
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Cómo entrar
           <span className="block font-normal text-tinta-3">
             Portero, timbre, cochera. Lo que le sirva al profesional.
@@ -168,12 +168,12 @@ export default function FormularioInmueble({
           onChange={(e) => setInstrucciones(e.target.value)}
           rows={2}
           placeholder="Portero hasta las 20. Timbre 6B."
-          className="resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-[14px] text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+          className="resize-none rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
         />
       </label>
 
       {error && (
-        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
           {error}
         </p>
       )}
@@ -181,7 +181,7 @@ export default function FormularioInmueble({
       <button
         type="submit"
         disabled={guardando}
-        className="mt-1 rounded-xl bg-acento py-3 text-[14.5px] font-bold text-acento-tinta disabled:opacity-60"
+        className="mt-1 rounded-xl bg-acento py-3 text-cuerpo font-bold text-acento-tinta disabled:opacity-60"
       >
         {guardando ? "Guardando…" : "Guardar inmueble"}
       </button>
@@ -204,14 +204,14 @@ function Campo({
 }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[12.5px] font-semibold text-tinta">{etiqueta}</span>
+      <span className="text-apoyo font-semibold text-tinta">{etiqueta}</span>
       <input
         type="text"
         value={valor}
         onChange={(e) => alCambiar(e.target.value)}
         placeholder={ejemplo}
         required={requerido}
-        className="w-full rounded-xl border border-linea bg-white px-3.5 py-3 text-[14px] text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+        className="w-full rounded-xl border border-linea bg-white px-3.5 py-3 text-cuerpo text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
       />
     </label>
   );

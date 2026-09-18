@@ -98,7 +98,7 @@ export default function FormularioPresupuesto({
   return (
     <form onSubmit={enviar} className="flex flex-col gap-4 px-5 pt-5 pb-10">
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Mano de obra
         </span>
         <input
@@ -106,12 +106,12 @@ export default function FormularioPresupuesto({
           value={manoObra}
           onChange={(e) => setManoObra(e.target.value)}
           placeholder="28000"
-          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 font-mono text-[15px] font-semibold text-tinta tabular-nums outline-none placeholder:font-sans placeholder:font-normal placeholder:text-tinta-3 focus:border-marca-2"
+          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 font-mono text-destacado font-semibold text-tinta tabular-nums outline-none placeholder:font-sans placeholder:font-normal placeholder:text-tinta-3 focus:border-marca-2"
         />
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Repuestos
           <span className="block font-normal text-tinta-3">
             Dejalo vacío si no llevás nada.
@@ -122,12 +122,12 @@ export default function FormularioPresupuesto({
           value={repuestos}
           onChange={(e) => setRepuestos(e.target.value)}
           placeholder="18000"
-          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 font-mono text-[15px] font-semibold text-tinta tabular-nums outline-none placeholder:font-sans placeholder:font-normal placeholder:text-tinta-3 focus:border-marca-2"
+          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 font-mono text-destacado font-semibold text-tinta tabular-nums outline-none placeholder:font-sans placeholder:font-normal placeholder:text-tinta-3 focus:border-marca-2"
         />
       </label>
 
       <div className="flex flex-col gap-2">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Qué incluye
         </span>
         <div className="flex flex-wrap gap-2">
@@ -136,7 +136,7 @@ export default function FormularioPresupuesto({
               key={item}
               type="button"
               onClick={() => alternar(item)}
-              className={`rounded-full border px-3 py-1.5 text-[12.5px] font-semibold transition ${
+              className={`rounded-full border px-3 py-1.5 text-apoyo font-semibold transition ${
                 incluye.includes(item)
                   ? "border-acento bg-acento text-acento-tinta"
                   : "border-linea bg-white text-tinta-2"
@@ -149,7 +149,7 @@ export default function FormularioPresupuesto({
       </div>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           Mensaje al cliente
           <span className="block font-normal text-tinta-3">
             Qué creés que es y cómo lo vas a resolver.
@@ -160,19 +160,19 @@ export default function FormularioPresupuesto({
           onChange={(e) => setMensaje(e.target.value)}
           rows={4}
           placeholder="Por lo que contás es la termocupla. La llevo en el auto, lo resuelvo en la misma visita y te dejo el certificado firmado."
-          className="resize-none rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
+          className="resize-none rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo leading-relaxed text-tinta outline-none placeholder:text-tinta-3 focus:border-marca-2"
         />
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-[12.5px] font-semibold text-tinta">
+        <span className="text-apoyo font-semibold text-tinta">
           ¿Cuándo podés ir?
         </span>
         <input
           type="datetime-local"
           value={disponible}
           onChange={(e) => setDisponible(e.target.value)}
-          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-[14px] text-tinta outline-none focus:border-marca-2"
+          className="rounded-xl border border-linea bg-fondo px-3.5 py-3 text-cuerpo text-tinta outline-none focus:border-marca-2"
         />
       </label>
 
@@ -185,21 +185,21 @@ export default function FormularioPresupuesto({
           rojo
         />
         <div className="mt-1 flex items-center justify-between border-t border-linea pt-3">
-          <span className="text-[13.5px] font-semibold text-tinta">
+          <span className="text-cuerpo font-semibold text-tinta">
             Te queda
           </span>
-          <b className="font-mono text-[16px] font-semibold text-tinta tabular-nums">
+          <b className="font-mono text-destacado font-semibold text-tinta tabular-nums">
             {aPesos(netoCent)}
           </b>
         </div>
-        <p className="mt-2.5 text-[11.5px] leading-snug text-tinta-3">
+        <p className="mt-2.5 text-etiqueta leading-snug text-tinta-3">
           Se acredita cuando el cliente confirma que el trabajo está terminado,
           o automáticamente a las 72 horas.
         </p>
       </div>
 
       {error && (
-        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-[13px] text-tinta-2">
+        <p className="rounded-xl border border-alerta/30 bg-alerta-suave px-3.5 py-3 text-apoyo text-tinta-2">
           {error}
         </p>
       )}
@@ -208,11 +208,11 @@ export default function FormularioPresupuesto({
         <button
           type="submit"
           disabled={enviando}
-          className="w-full rounded-xl bg-acento py-3.5 text-[15px] font-bold text-acento-tinta disabled:opacity-60"
+          className="w-full rounded-xl bg-acento py-3.5 text-destacado font-bold text-acento-tinta disabled:opacity-60"
         >
           {enviando ? "Enviando…" : "Enviar presupuesto"}
         </button>
-        <p className="mt-2.5 text-center text-[11.5px] leading-snug text-tinta-3">
+        <p className="mt-2.5 text-center text-etiqueta leading-snug text-tinta-3">
           Una vez enviado no se puede editar. Si te equivocás, mandás uno nuevo
           y el anterior queda reemplazado.
         </p>
@@ -232,9 +232,9 @@ function Fila({
 }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span className="text-[13px] text-tinta-2">{texto}</span>
+      <span className="text-apoyo text-tinta-2">{texto}</span>
       <b
-        className={`font-mono text-[13.5px] font-semibold tabular-nums ${
+        className={`font-mono text-cuerpo font-semibold tabular-nums ${
           rojo ? "text-alerta" : "text-tinta"
         }`}
       >
